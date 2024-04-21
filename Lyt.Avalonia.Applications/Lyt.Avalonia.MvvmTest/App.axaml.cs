@@ -1,15 +1,20 @@
-﻿using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
-using Avalonia.Markup.Xaml;
+﻿namespace Lyt.Avalonia.MvvmTest;
 
-using Lyt.Avalonia.MvvmTest.ViewModels;
-using Lyt.Avalonia.MvvmTest.Views;
-
-namespace Lyt.Avalonia.MvvmTest;
-
-public partial class App : Application
+public partial class App : ApplicationBase
 {
+    public App(): base(
+        "MvvmTest",
+        typeof(MainWindow),
+        typeof(ApplicationModelBase), // Top level model 
+        [], // Models 
+        [], // Singletons 
+        [
+            // Services 
+            new Tuple<Type, Type>(typeof(IMessenger), typeof(Messenger)),
+        ])        
+    {
+    }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -17,6 +22,8 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        base.InitializeHosting(); 
+
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
@@ -38,4 +45,5 @@ public partial class App : Application
 
         base.OnFrameworkInitializationCompleted();
     }
+
 }
