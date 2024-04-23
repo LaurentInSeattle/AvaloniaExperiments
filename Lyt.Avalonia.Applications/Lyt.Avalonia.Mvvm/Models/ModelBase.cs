@@ -1,8 +1,17 @@
-﻿namespace Lyt.Avalonia.Mvvm.Models;  
+﻿namespace Lyt.Avalonia.Mvvm.Models;
 
-public class ModelBase : IModel
+public abstract class ModelBase : IModel
 {
-    public void Initialize() => throw new NotImplementedException();
-    public void Shutdown() => throw new NotImplementedException();
-    public void SubscribeToUpdates(Action onUpdate, bool withUiDispatch = false) => throw new NotImplementedException();
+    protected readonly IMessenger messenger;
+
+    public ModelBase(IMessenger messenger) => this.messenger = messenger;
+
+    public abstract Task Initialize(); 
+
+    public abstract Task Shutdown(); 
+
+    public void SubscribeToUpdates(Action<ModelUpdateMessage> onUpdate, bool withUiDispatch = false)
+        => this.messenger.Subscribe(onUpdate, withUiDispatch);
+
+    protected void NotifyUpdate() => this.messenger.Publish(new ModelUpdateMessage(this));
 }

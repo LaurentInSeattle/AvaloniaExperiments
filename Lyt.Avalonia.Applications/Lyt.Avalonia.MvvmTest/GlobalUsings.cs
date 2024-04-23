@@ -11,6 +11,9 @@ global using System.Threading.Tasks;
 
 global using System.Windows.Input;
 
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+
 global using Avalonia;
 global using Avalonia.Controls;
 global using Avalonia.Controls.ApplicationLifetimes;
@@ -23,9 +26,9 @@ global using Lyt.Avalonia.Mvvm;
 global using Lyt.Avalonia.Mvvm.Core;
 global using Lyt.Avalonia.Mvvm.Messenger;
 global using Lyt.Avalonia.Mvvm.Models;
+global using Lyt.Avalonia.Mvvm.Utilities;
 
-global using Lyt.Avalonia.MvvmTest.ViewModels;
-global using Lyt.Avalonia.MvvmTest.Views;
+global using Lyt.Avalonia.MvvmTest.Shell;
+global using Lyt.Avalonia.MvvmTest.Models;
 
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
+

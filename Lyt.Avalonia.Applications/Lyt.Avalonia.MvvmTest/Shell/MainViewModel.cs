@@ -1,8 +1,12 @@
-﻿using Lyt.Avalonia.MvvmTest.Views;
-
-namespace Lyt.Avalonia.MvvmTest.ViewModels;
+﻿namespace Lyt.Avalonia.MvvmTest.Shell;
 
 public partial class MainViewModel : Bindable<MainView>
 {
+    public MainViewModel()
+    {
+        
+    }
+
     public string Greeting => "Hello!";
+
 }

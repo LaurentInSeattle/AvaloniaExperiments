@@ -1,6 +1,4 @@
-﻿using Avalonia.Controls;
-
-namespace Lyt.Avalonia.MvvmTest.Views;
+﻿namespace Lyt.Avalonia.MvvmTest.Shell;
 
 public partial class MainView : UserControl
 {

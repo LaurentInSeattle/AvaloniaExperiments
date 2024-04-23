@@ -43,7 +43,7 @@ public sealed class Messenger : IMessenger
         var target = action.Target;
         if ( target == null)
         {
-            this.logger.Fatal( "Static actions are NOT supported.");
+            this.logger.Error( "Static actions are NOT supported.");
             throw new NotSupportedException("no static actions");
         }
 

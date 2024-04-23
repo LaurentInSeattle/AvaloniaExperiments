@@ -17,7 +17,7 @@ public sealed class WeakAction<T> : WeakAction where T : class
 
         if (action.Method.IsStatic)
         {
-            this.logger.Fatal( "Static actions are NOT supported.");
+            this.logger.Error( "Static actions are NOT supported.");
             throw new NotSupportedException("no static actions");
         }
 
