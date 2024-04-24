@@ -50,11 +50,11 @@ public sealed class WeakAction<T> : WeakAction where T : class
                     if ( this.WithUiDispatch)
                     {
                         Dispatch.OnUiThread(
-                            () => { _ = this.Method.Invoke(actionTarget, new object?[] { parameter }); }, DispatcherPriority.Normal);
+                            () => { _ = this.Method.Invoke(actionTarget, [parameter]); }, DispatcherPriority.Normal);
                     }
                     else
                     {
-                        _ = this.Method.Invoke(actionTarget, new object?[] { parameter });
+                        _ = this.Method.Invoke(actionTarget, [parameter]);
                     }
                 }
                 catch

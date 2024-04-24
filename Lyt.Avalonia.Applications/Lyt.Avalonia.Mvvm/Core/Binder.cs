@@ -54,8 +54,5 @@ public static class Binder<TControl, TBindable>
         return bindable;
     }
 
-    public static void Bind(TControl control, TBindable bindable)
-    {
-        bindable.Bind(control);
-    }
+    public static void Bind(TControl control, TBindable bindable) => bindable.Bind(control);
 }

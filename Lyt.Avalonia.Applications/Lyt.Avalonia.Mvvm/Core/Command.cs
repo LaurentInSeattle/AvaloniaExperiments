@@ -50,7 +50,7 @@ public sealed class Command : ICommand
         else if (this.executeMethod != null)
         {
             Command.LogCommand(this.executeObject, this.executeMethod.Name, parameter);
-            this.executeMethod.Invoke(executeObject, new object?[] { parameter });
+            this.executeMethod.Invoke(this.executeObject, [parameter]);
         }
     }
 
@@ -60,6 +60,13 @@ public sealed class Command : ICommand
         string targetName = target == null ? "null target" : target.GetType().Name;
         string? parameterString = parameter == null ? "null parameter" : parameter.ToString();
         string message = string.Format("Commanding {0}.{1} with parameter: {2}", targetName, name, parameterString);
-        // Command.Logger?.Info(message);
+        if ( target is Bindable bindable)
+        {
+            bindable.Logger.Info(message);
+        }
+        else
+        {
+            Debug.WriteLine(message);
+        }
     }
 }

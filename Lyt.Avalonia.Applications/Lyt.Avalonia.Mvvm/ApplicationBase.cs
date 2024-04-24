@@ -78,12 +78,13 @@ public class ApplicationBase : Application
                 throw new NotImplementedException("Failed to create MainWindow");
             }
         }
-        else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
+        else if (this.ApplicationLifetime is ISingleViewApplicationLifetime)
         {
-            //singleViewPlatform.MainView = new MainView
-            //{
-            //    DataContext = new MainViewModel()
-            //};
+            // For designer mode
+        }
+        else
+        {
+            throw new NotImplementedException("Unsupported Application Lifetime");
         }
 
         base.OnFrameworkInitializationCompleted();
@@ -145,12 +146,7 @@ public class ApplicationBase : Application
 
     public static T GetModel<T>() where T : notnull
     {
-        T? model = ApplicationBase.GetRequiredService<T>();
-        if (model is null)
-        {
-            throw new ApplicationException("No model of type " + typeof(T).FullName);
-        }
-
+        T? model = ApplicationBase.GetRequiredService<T>() ?? throw new ApplicationException("No model of type " + typeof(T).FullName);
         bool isModel = typeof(IModel).IsAssignableFrom(typeof(T));
         if (!isModel)
         {
@@ -209,10 +205,9 @@ public class ApplicationBase : Application
 
     private void WarmupModels()
     {
-        IApplicationModel applicationModel = ApplicationBase.GetRequiredService<IApplicationModel>();
         foreach (Type type in this.validatedModelTypes)
         {
-            var model = ApplicationBase.AppHost!.Services.GetRequiredService(type);
+            object model = ApplicationBase.AppHost!.Services.GetRequiredService(type);
             if ( model is not IModel)
             {
                 throw new ApplicationException("Failed to warmup model: " + type.FullName );

@@ -33,15 +33,15 @@ public sealed class Messenger : IMessenger
         var type = typeof(TMessage);
         if (!this.recipients.TryGetValue(type, out var weakActions))
         {
-            weakActions = new HashSet<WeakAction?>();
+            weakActions = [];
             if (!this.recipients.TryAdd(type, weakActions))
             {
                 weakActions = this.recipients[type];
             }
         }
 
-        var target = action.Target;
-        if ( target == null)
+        object? target = action.Target;
+        if ( target is null)
         {
             this.logger.Error( "Static actions are NOT supported.");
             throw new NotSupportedException("no static actions");
@@ -64,7 +64,7 @@ public sealed class Messenger : IMessenger
             return;
         }
 
-        if ((weakActions == null) || (weakActions.Count == 0))
+        if ((weakActions is null) || (weakActions.Count == 0))
         {
             return;
         }

@@ -1,8 +1,6 @@
 ﻿namespace Lyt.Avalonia.Interfaces.Model;
 
-public sealed class ModelUpdateMessage
+public sealed class ModelUpdateMessage(IModel model)
 {
-    public ModelUpdateMessage(IModel model) => this.Model = model;
-    
-    public IModel Model { get; private set; }   
+    public IModel Model { get; private set; } = model;
 }
