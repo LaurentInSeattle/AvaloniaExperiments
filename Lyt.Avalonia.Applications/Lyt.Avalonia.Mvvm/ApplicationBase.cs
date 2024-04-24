@@ -1,17 +1,13 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core.Plugins;
-using Avalonia.Markup.Xaml;
-using Lyt.Avalonia.Mvvm.Core;
-using System.Reflection;
-
-namespace Lyt.Avalonia.Mvvm;
+﻿namespace Lyt.Avalonia.Mvvm;
 
 public class ApplicationBase : Application
 {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // The host cannot be null or else there is no app...
     public static IHost AppHost { get; private set; }
-#pragma warning restore CS8618 
+
+    // Logger will never be null or else the app did not take off
+    public ILogger Logger { get; private set; }
 
     private readonly string applicationKey;
     private readonly Type mainWindowType;
@@ -22,6 +18,7 @@ public class ApplicationBase : Application
     private readonly List<Type> validatedModelTypes;
 
     public ApplicationBase(
+#pragma warning restore CS8618 
         string applicationKey,
         Type mainWindowType,
         Type applicationModelType,
@@ -94,7 +91,7 @@ public class ApplicationBase : Application
         await this.OnStartup(); 
     }
 
-    protected void InitializeHosting()
+    private void InitializeHosting()
     {
         ApplicationBase.AppHost = Host.CreateDefaultBuilder()
                 .ConfigureServices((_0, services) =>
@@ -178,15 +175,15 @@ public class ApplicationBase : Application
 
         return models;
     }
-
     
     private async Task OnStartup ()
     {
         await ApplicationBase.AppHost.StartAsync();
 
-        //var logger = ApplicationBase.GetRequiredService<ILogger>();
-        //this.Logger = logger;
-        //if (logger is NoahLogger noahLogger)
+        var logger = ApplicationBase.GetRequiredService<ILogger>();
+        this.Logger = logger;
+
+        //if (logger is .... )
         //{
         //    noahLogger.ApplicationName = this.applicationKey;
         //    if (Debugger.IsAttached)
@@ -201,22 +198,13 @@ public class ApplicationBase : Application
         //    }
         //}
 
-        //// Purely for convenience and a nano-bit of added performance 
-        //Bindable.Logger = logger;
-        //Command.Logger = logger;
-
-        //logger.Info("***   Startup   ***");
+        this.Logger.Info("***   Startup   ***");
 
         // Warming up the models: 
         // This ensures that the Application Model and all listed models are constructed.
         this.WarmupModels();
-
-        //// Launch the main window
-        //var startupWindow = ApplicationBase.GetRequiredService<Window>();
-        //startupWindow.Closing += (_, _) => { this.logViewer?.Close(); };
-        //startupWindow.Show();
-
-        //base.OnStartup(e);
+        IApplicationModel applicationModel = ApplicationBase.GetRequiredService<IApplicationModel>();
+        await applicationModel.Initialize();
     }
 
     private void WarmupModels()
@@ -230,5 +218,14 @@ public class ApplicationBase : Application
                 throw new ApplicationException("Failed to warmup model: " + type.FullName );
             }
         }
+    }
+
+    public async Task OnShutdown()
+    {
+        this.Logger.Info("***   Shutdown   ***");
+        //startupWindow.Closing += (_, _) => { this.logViewer?.Close(); };
+        IApplicationModel applicationModel = ApplicationBase.GetRequiredService<IApplicationModel>();
+        await applicationModel.Shutdown();
+        await ApplicationBase.AppHost!.StopAsync();
     }
 }

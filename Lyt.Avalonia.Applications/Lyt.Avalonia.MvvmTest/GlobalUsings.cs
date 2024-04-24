@@ -22,6 +22,8 @@ global using Avalonia.Markup.Xaml;
 global using Avalonia.Threading;
 
 global using Lyt.Avalonia.Interfaces;
+global using Lyt.Avalonia.Interfaces.Model;
+
 global using Lyt.Avalonia.Mvvm;
 global using Lyt.Avalonia.Mvvm.Core;
 global using Lyt.Avalonia.Mvvm.Messenger;

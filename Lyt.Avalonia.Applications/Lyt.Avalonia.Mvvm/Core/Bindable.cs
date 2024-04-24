@@ -7,16 +7,23 @@ public class DoNotLogAttribute : Attribute { }
 /// <remarks> All bound properties are held in a dictionary.</remarks>
 public class Bindable : NotifyPropertyChanged
 {
-    // public static ILogger? Logger { get; set; }
+    public Bindable()
+    {
+        this.Messenger = ApplicationBase.GetRequiredService<IMessenger>();
+        this.Logger = ApplicationBase.GetRequiredService<ILogger>();
+        this.properties = [];
+    }
+
+    public ILogger Logger { get; private set; }
+
+    public IMessenger Messenger { get; private set; }
 
     /// <summary> The bounds properties.</summary>
     protected readonly Dictionary<string, object?> properties;
 
-    public Bindable() => this.properties = [];
-
-    /// <summary> The framework element, its Data Context is this instance. </summary>
+    /// <summary> The control, its Data Context is this instance. </summary>
     /// <remarks> Aka, the "View" </remarks>
-    public Control? FrameworkElement { get; private set; }
+    public Control? Control { get; private set; }
 
     /// <summary> Allows to disable logging when properties are changing so that we do not flood the logs. </summary>
     /// <remarks> Use for quickly changing properties, mouse, sliders, etc.</remarks>
@@ -25,49 +32,49 @@ public class Bindable : NotifyPropertyChanged
     /// <summary> Binds any object, when possible.</summary>
     public object? XamlView
     {
-        get => this.FrameworkElement;
+        get => this.Control;
         set
         {
-            if (value is Control frameworkElement)
+            if (value is Control control)
             {
-                this.Bind(frameworkElement);
+                this.Bind(control);
             }
         }
     }
 
-    /// <summary> Binds a framework element and setup callbacks. </summary>
-    public void Bind(Control frameworkElement)
+    /// <summary> Binds a control and setup callbacks. </summary>
+    public void Bind(Control control)
     {
-        this.FrameworkElement = frameworkElement;
-        this.FrameworkElement.DataContext = this;
+        this.Control = control;
+        this.Control.DataContext = this;
         this.OnDataBinding();
-        this.FrameworkElement.Loaded += (s, e) => this.OnViewLoaded();
+        this.Control.Loaded += (s, e) => this.OnViewLoaded();
     }
 
     /// <summary> Unbinds this bindable. </summary>
     public void Unbind()
     {
-        if (this.FrameworkElement != null)
+        if (this.Control != null)
         {
-            if (this.FrameworkElement.DataContext != null)
+            if (this.Control.DataContext != null)
             {
-                this.FrameworkElement.DataContext = null;
+                this.Control.DataContext = null;
             }
 
-            this.FrameworkElement.Loaded -= (s, e) => this.OnViewLoaded();
+            this.Control.Loaded -= (s, e) => this.OnViewLoaded();
         }
     }
 
-    /// <summary> Unbinds the provided framework element. </summary>
-    public static void Unbind(Control frameworkElement)
+    /// <summary> Unbinds the provided control. </summary>
+    public static void Unbind(Control control)
     {
-        if (frameworkElement is not null)
+        if (control is not null)
         {
-            if (frameworkElement.DataContext is Bindable bindable)
+            if (control.DataContext is Bindable bindable)
             {
-                bindable.FrameworkElement = null; 
-                frameworkElement.DataContext = null;
-                frameworkElement.Loaded -= (s, e) => bindable.OnViewLoaded();
+                bindable.Control = null; 
+                control.DataContext = null;
+                control.Loaded -= (s, e) => bindable.OnViewLoaded();
             }
         }
     }
@@ -109,7 +116,7 @@ public class Bindable : NotifyPropertyChanged
         this.OnPropertyChanged(name);
         if ( ! this.DisablePropertyChangedLogging)
         {
-            Bindable.LogPropertyChanged(name, value);
+            this.LogPropertyChanged(name, value);
         }
 
         return true;
@@ -133,7 +140,7 @@ public class Bindable : NotifyPropertyChanged
 
     /// <summary> Logs that a property is changing. </summary>
     [Conditional("DEBUG")]    
-    private static void LogPropertyChanged(string name, object? value)
+    private void LogPropertyChanged(string name, object? value)
     {
         int frameIndex = 1;
         string typeName;
@@ -168,11 +175,11 @@ public class Bindable : NotifyPropertyChanged
             string.Format(
                 "From {0} in {1}: Property {2} changed to:   {3}",
                 typeName, methodAboveName, name, value==null? "null": value.ToString());
-        // Bindable.Logger?.Info(message);
+        this.Logger.Info(message);
     }
 
     //[Conditional("DEBUG")]
-    //private static void Log()
+    //private void Log()
     //{
     //    // TODO : Serialize all properties to JSon and then log the Json string 
 

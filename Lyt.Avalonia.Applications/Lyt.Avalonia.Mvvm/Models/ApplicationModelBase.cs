@@ -11,13 +11,13 @@ public class ApplicationModelBase : IApplicationModel
         this.application = application;
     }
 
-    public void Initialize()
+    public async Task Initialize()
     {
         try
         {
             foreach (var model in this.application.GetModels())
             {
-                model.Initialize();
+                await model.Initialize();
             }
         }
         catch (Exception ex)
@@ -44,13 +44,13 @@ public class ApplicationModelBase : IApplicationModel
         }
     }
 
-    public void Shutdown()
+    public async Task Shutdown()
     {
         try
         {
             foreach (var model in this.application.GetModels())
             {
-                model.Shutdown();
+                await model.Shutdown();
             }
         }
         catch (Exception ex)

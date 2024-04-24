@@ -1,14 +1,24 @@
-﻿using Lyt.Avalonia.Interfaces.Model;
+﻿namespace Lyt.Avalonia.MvvmTest.Models; 
 
-namespace Lyt.Avalonia.MvvmTest.Models; 
-
-public sealed class TimingModel : ModelBase, IModel
+public sealed class TimingModel() : ModelBase(), IModel
 {
+    private bool isTicking;
     private DispatcherTimer? dispatcherTimer;
 
-    public TimingModel(IMessenger messenger) : base(messenger) => this.TickCount = 10_000;
+    public int TickCount { get; private set; } = 10_000;
 
-    public int TickCount { get; private set; }
+    public bool IsTicking 
+    { 
+        get => this.isTicking; 
+        private set
+        {
+            if (this.isTicking != value)
+            {
+                this.isTicking = value;
+                base.NotifyUpdate();
+            }
+        }
+    }
 
     public override Task Initialize()
     {
@@ -29,6 +39,7 @@ public sealed class TimingModel : ModelBase, IModel
             this.dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5), IsEnabled = false };
             this.dispatcherTimer.Tick += this.OnDispatcherTimerTick;
             this.dispatcherTimer.Start();
+            this.IsTicking = true;
         }
     }
 
@@ -39,8 +50,13 @@ public sealed class TimingModel : ModelBase, IModel
             this.dispatcherTimer.Stop();
             this.dispatcherTimer.Tick -= this.OnDispatcherTimerTick;
             this.dispatcherTimer = null;
+            this.IsTicking = false;
         }
     }
 
-    private void OnDispatcherTimerTick(object? sender, EventArgs e) => ++this.TickCount;
+    private void OnDispatcherTimerTick(object? sender, EventArgs e)
+    {
+        ++this.TickCount;
+        base.NotifyUpdate();
+    } 
 }

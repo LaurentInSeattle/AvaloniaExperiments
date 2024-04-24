@@ -14,9 +14,9 @@ public interface IModel
 
 public interface IApplicationModel
 {
-    /// <summary>  Initializes the model. </summary>
-    void Initialize();
+    /// <summary>  Initializes all models. </summary>
+    Task Initialize();
 
-    /// <summary> Shutdowns the model </summary>
-    void Shutdown();
+    /// <summary> Shutdowns all models </summary>
+    Task Shutdown();
 }

@@ -10,7 +10,10 @@ public partial class App : ApplicationBase
             // Models 
             typeof(TimingModel)
         ], 
-        [], // Singletons 
+        [
+           // Singletons
+           typeof(ShellViewModel)
+        ], 
         [
             // Services 
             new Tuple<Type, Type>(typeof(ILogger), typeof(Logger)),
@@ -19,6 +22,6 @@ public partial class App : ApplicationBase
     {
     }
 
-    // Needs to be there ??? 
+    // Why does it needs to be there ??? 
     public override void Initialize() => AvaloniaXamlLoader.Load(this);
 }

@@ -1,12 +1,10 @@
 ﻿namespace Lyt.Avalonia.MvvmTest.Shell;
 
-public partial class MainViewModel : Bindable<MainView>
+public sealed class ShellViewModel : Bindable<ShellView>
 {
-    public MainViewModel()
+    public ShellViewModel() 
     {
-        
     }
 
     public string Greeting => "Hello!";
-
 }

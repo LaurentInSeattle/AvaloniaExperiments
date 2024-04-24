@@ -2,12 +2,13 @@
 namespace Lyt.Avalonia.Mvvm.Core;
 
 /// <summary> Strongly typed bindable </summary>
-/// <typeparam name="TFrameworkElement"></typeparam>
-public class Bindable<TFrameworkElement> : Bindable where TFrameworkElement : Control, new()
+/// <typeparam name="TControl"></typeparam>
+public class Bindable<TControl> : Bindable where TControl : Control, new()
 {
     public Bindable() : base() { }
 
-    public Bindable(TFrameworkElement frameworkElement) : base() => this.Bind(frameworkElement);
+    public Bindable(TControl frameworkElement) : base() 
+        => this.Bind(frameworkElement);
 
-    public TFrameworkElement? View => this.FrameworkElement as TFrameworkElement;
+    public TControl? View => this.Control as TControl;
 }
