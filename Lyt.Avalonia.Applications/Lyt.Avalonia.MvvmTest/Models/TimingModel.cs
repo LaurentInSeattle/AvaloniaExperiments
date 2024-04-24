@@ -36,7 +36,7 @@ public sealed class TimingModel() : ModelBase(), IModel
     {
         if ( this.dispatcherTimer is null)
         {
-            this.dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5), IsEnabled = false };
+            this.dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3), IsEnabled = false };
             this.dispatcherTimer.Tick += this.OnDispatcherTimerTick;
             this.dispatcherTimer.Start();
             this.IsTicking = true;
