@@ -13,8 +13,11 @@ public partial class MainWindow : Window
         this.Closing += this.OnMainWindowClosing;
         this.Loaded +=
             (s, e) =>
-                this.Content =
-                    Binder<ShellView, ShellViewModel>.CreateAndBind(App.GetRequiredService<ShellViewModel>()).View;
+            {
+                var vm = App.GetRequiredService<ShellViewModel>();
+                vm.CreateViewAndBind();
+                this.Content = vm.View;
+            }; 
     }
 
     private void OnMainWindowClosing(object? sender, CancelEventArgs e)

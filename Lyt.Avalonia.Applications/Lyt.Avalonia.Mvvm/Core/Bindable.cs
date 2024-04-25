@@ -122,10 +122,10 @@ public class Bindable : NotifyPropertyChanged
         return true;
     }
 
-    /// <summary> Clear (and Dispose when applicable) all properties </summary>
+    /// <summary> Clear and Dispose when applicable, all properties </summary>
     protected void Clear()
     {
-        foreach (var property in this.properties.Values)
+        foreach (object? property in this.properties.Values)
         {
             if (property is IDisposable disposable)
             {
