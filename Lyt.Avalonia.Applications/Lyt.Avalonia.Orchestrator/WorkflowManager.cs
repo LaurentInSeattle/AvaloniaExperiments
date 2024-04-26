@@ -1,35 +1,32 @@
 ﻿namespace Lyt.Avalonia.Orchestrator;
 
-public sealed class WorkflowManager<TState, TTrigger> 
+public sealed class WorkflowManager<TState, TTrigger>
     where TState : struct, Enum
     where TTrigger : struct, Enum
 {
-    public const int DefaultAnimationDuration = 666; // milliseconds
+    public const int DefaultAnimationDuration = 0; // milliseconds
     public const int MinimumAnimationDuration = 100; // milliseconds
 
     private readonly ILogger logger;
+    private readonly IMessenger messenger;
     private readonly FiniteStateMachine<TState, TTrigger, Bindable> stateMachine;
     private readonly Dictionary<TState, WorkflowPage<TState, TTrigger>> pageIndex;
-    private readonly Stack<WorkflowPage<TState, TTrigger>> navigationStack;
 
     public ContentControl HostControl { get; private set; }
 
-    public WorkflowManager(ILogger logger, ContentControl hostControl)
+    public WorkflowManager(ILogger logger, IMessenger messenger, ContentControl hostControl)
     {
-        this.logger = logger;   
+        this.logger = logger;
+        this.messenger = messenger;
         this.HostControl = hostControl;
-        this.stateMachine = new (this.logger);
+        this.stateMachine = new(this.logger);
         this.pageIndex = [];
-        this.navigationStack = new ();
     }
 
     public WorkflowPage<TState, TTrigger>? GetPage(TState state)
         => this.pageIndex.TryGetValue(state, out var workflowPage) ? workflowPage : null;
 
     public WorkflowPage<TState, TTrigger>? ActivePage { get; private set; }
-
-    public WorkflowPage<TState, TTrigger>? PreviousPage
-        => this.navigationStack.Count > 0 ? this.navigationStack.Peek() : null;
 
     public Move IsMoving { get; private set; }
 
@@ -45,6 +42,8 @@ public sealed class WorkflowManager<TState, TTrigger>
 
         try
         {
+            // TODO 
+            //
             //bool isFirst = true;
             //foreach (var page in pages)
             //{
@@ -100,115 +99,130 @@ public sealed class WorkflowManager<TState, TTrigger>
         // this.stateMachine.Start();
         var newState = this.stateMachine.State;
         var activated = await this.ActivatePage(newState);
-        // this.OnTransition?.Invoke(null, activated);
         this.UpdateVisuals();
+
+        // Raise the Navigate weak event so that workflow related widgets, if any, will dismiss.
+        this.messenger.Publish(new NavigationMessage(activated, null));
     }
 
-    public void UpdateVisuals() { }  // => this.UpdateVisuals();
+    public void UpdateVisuals() { /* TODO */ }  // => this.UpdateVisuals();
 
-    public void ClearBackNavigation() => this.navigationStack.Clear();
+    public void ClearBackNavigation() => this.stateMachine.ClearBackNavigation();
 
-    public bool CanGoBack()
+    public async Task<bool> Next(int fadeDuration = DefaultAnimationDuration)
     {
-        // check first if the state machine has back navigation,
-        if (this.stateMachine.HasBackNavigation(out var _))
+        if (this.CanGoNext(out var _, out var _))
         {
-            // The state machine has back navigation: check if back navigation is valid
-            // Discard new state, as this point, it is not needed
-            return this.stateMachine.CanGoBack(out _);
+            return await this.TryGoNext(fadeDuration);
         }
-        else
-        {
-            // Regular case, no back navigation: we can go back if we are not transitioning
-            // and the navigation stack is not empty
-            return !this.IsTransitioning && (this.navigationStack.Count > 0);
-        }
+
+        return false;
     }
 
-    public async Task<bool> TryGoBack(int fadeDuration = 250)
+    public async Task<bool> Back(int fadeDuration = DefaultAnimationDuration)
+    {
+        if (this.CanGoBack(out TState _))
+        {
+            return await this.TryGoBack(fadeDuration);
+        }
+
+        return false;
+    }
+
+    public async Task<bool> Fire(TTrigger trigger, int fadeDuration = DefaultAnimationDuration)
+    {
+        if (this.CanFire(trigger))
+        {
+            return await this.TryFire(trigger, fadeDuration);
+        }
+
+        return false;
+    }
+
+    public bool CanGoBack(out TState state)
+    {
+        // We can go back if we are not transitioning and the navigation stack is not empty
+        state = this.stateMachine.State;
+        return !this.IsTransitioning && this.stateMachine.CanGoBack(out state);
+    }
+
+    public bool CanGoNext(out TState state, out TTrigger trigger)
+    {
+        state = default;
+        trigger = default;
+        if (this.IsTransitioning)
+        {
+            return false;
+        }
+
+        return this.stateMachine.CanGoNext(out state, out trigger);
+    }
+
+    public bool CanFire(TTrigger trigger)
+    {
+        // TODO 
+        return true;
+    }
+
+    private async Task<bool> TryGoBack(int fadeDuration = DefaultAnimationDuration)
     {
         this.IsMoving = Move.NotMoving;
         var oldState = this.stateMachine.State;
-        TState newState;
-        if (this.stateMachine.HasBackNavigation(out var _))
+        if (!this.CanGoBack(out TState newState))
         {
-            if (!this.stateMachine.CanGoBack(out newState))
-            {
-                string message1 =
-                    string.Format("Cant go back from: {0} to {1}", oldState.ToString(), newState.ToString());
-                this.logger.Info(message1);
-                return false;
-            }
-
-            this.navigationStack.Clear();
-        }
-        else
-        {
-            var previousPage = this.navigationStack.Count > 0 ? this.navigationStack.Pop() : null;
-            if (previousPage == null)
-            {
-                string message3 =
-                    string.Format("No back navigation and no previous page for: {0} ", oldState.ToString());
-                this.logger.Info(message3);
-                return false;
-            }
-
-            newState = previousPage.State;
+            this.logger.Debug(string.Format("Cannot go back from: {0} ", oldState.ToString()));
+            return false;
         }
 
         this.IsMoving = Move.Backward;
         this.UpdateVisuals();
-        // this.machine.JumpTo(newState);
+        this.stateMachine.GoBack();
         var deactivated = await this.DeactivatePage(oldState, fadeDuration);
         var activated = await this.ActivatePage(newState, fadeDuration);
-        // this.OnTransition?.Invoke(deactivated, activated);
         this.IsMoving = Move.NotMoving;
         this.UpdateVisuals();
 
-        string message2 =
+        // Raise the Navigate weak event so that workflow related widgets, if any, will dismiss.
+        this.messenger.Publish(new NavigationMessage(activated, deactivated));
+
+        string message =
             string.Format("Backwards workflow transition from: {0} to {1}", oldState.ToString(), newState.ToString());
-        this.logger.Info(message2);
+        this.logger.Info(message);
         return true;
     }
 
-    public bool CanAdvance(out TState state)
-    {
-        if (this.IsTransitioning)
-        {
-            state = default;
-            return false;
-        }
-
-        return this.stateMachine.CanAdvance(out state);
-    }
-
-    public async Task<bool> TryAdvance(int fadeDuration = 250)
+    private async Task<bool> TryGoNext(int fadeDuration = DefaultAnimationDuration)
     {
         this.IsMoving = Move.NotMoving;
         this.UpdateVisuals();
         var oldState = this.stateMachine.State;
-        bool advance = this.stateMachine.TryAdvance(out TState newState);
-        if (advance)
+        bool canGoNext = this.stateMachine.CanGoNext(out TState newState, out TTrigger trigger);
+        if (canGoNext)
         {
             this.IsMoving = Move.Forward;
             this.UpdateVisuals();
+            this.stateMachine.GoNext(trigger);
             var deactivated = await this.DeactivatePage(oldState, fadeDuration);
-            if (deactivated != null)
-            {
-                this.navigationStack.Push(deactivated);
-            }
-
             var activated = await this.ActivatePage(newState, fadeDuration);
-            // this.OnTransition?.Invoke(deactivated, activated);
             this.IsMoving = Move.NotMoving;
             this.UpdateVisuals();
+
+            // Raise the Navigate weak event so that workflow related widgets, if any, will dismiss.
+            this.messenger.Publish(new NavigationMessage(activated, deactivated));
 
             string message =
                 string.Format("Forward workflow transition from: {0} to {1}", oldState.ToString(), newState.ToString());
             this.logger.Info(message);
         }
 
-        return advance;
+        return canGoNext;
+    }
+
+    private async Task<bool> TryFire(TTrigger trigger, int fadeDuration)
+    {
+        // TODO 
+        await Task.Delay(fadeDuration);
+        return true;
     }
 
     private async Task<WorkflowPage<TState, TTrigger>?> DeactivatePage(
@@ -229,9 +243,6 @@ public sealed class WorkflowManager<TState, TTrigger>
                 this.ActivePage.Control!.IsVisible = false;
             }
 
-            // Raise the Navigate weak event so that workflow popups, if any, will dismiss.
-            // We have none for now
-            // ApplicationEvent.Raise(ApplicationEvent.Kind.Navigate);
         }
 
         return deactivated;
@@ -255,62 +266,5 @@ public sealed class WorkflowManager<TState, TTrigger>
 
         await this.ActivePage.OnActivateAsync(newState);
         return this.ActivePage;
-    }
-
-    private void BackButtonClick(object sender, RoutedEventArgs rea)
-    {
-        if (!this.CanGoBack())
-        {
-            return;
-        }
-
-        var _ = this.TryGoBack();
-    }
-
-    private void NextButtonClick(object sender, RoutedEventArgs rea)
-    {
-        if (!this.CanAdvance(out var _))
-        {
-            return;
-        }
-
-        var _ = this.TryAdvance();
-    }
-
-    public void Next(int fadeDuration = 250) => this.Do(Step.Next, fadeDuration);
-
-    public void Back(int fadeDuration = 250) => this.Do(Step.Back, fadeDuration);
-
-    public void Action() => this.Do(Step.Action, 0);
-
-    private async void Do(Step step, int fadeDuration)
-    {
-        switch (step)
-        {
-            case Step.Back:
-                if (this.CanGoBack())
-                {
-                    var _ = this.TryGoBack(fadeDuration);
-                }
-
-                break;
-
-            case Step.Next:
-                if (this.CanAdvance(out var _))
-                {
-                    var _ = this.TryAdvance(fadeDuration);
-                }
-
-                break;
-
-            case Step.Action:
-                var activePage = this.ActivePage;
-                if (activePage != null)
-                {
-                    await activePage.OnAction();
-                }
-
-                break;
-        }
     }
 }

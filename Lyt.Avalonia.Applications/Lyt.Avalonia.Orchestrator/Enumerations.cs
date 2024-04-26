@@ -9,7 +9,7 @@ public enum Move
 
 public enum Step
 {
-    Next,
-    Action,
     Back,
+    Next,
+    Fire,
 }

@@ -4,9 +4,9 @@ public class WorkflowPage<TState, TTrigger> : Bindable
     where TState : struct, Enum
     where TTrigger : struct, Enum
 {
-    public WorkflowPage()
+    public WorkflowPage(WorkflowManager<TState, TTrigger> workflowManager)
     {
-            
+        this.WorkflowManager = workflowManager;
     }
 
     public virtual TState State => default;
@@ -21,5 +21,5 @@ public class WorkflowPage<TState, TTrigger> : Bindable
 
     public virtual Task OnDeactivateAsync(TState toState) => Task.CompletedTask;
 
-    public virtual Task OnAction() => Task.CompletedTask;
+    public WorkflowManager<TState, TTrigger> WorkflowManager { get; private set; }
 }

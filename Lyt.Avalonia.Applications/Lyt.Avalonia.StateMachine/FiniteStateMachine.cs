@@ -55,8 +55,6 @@ public class FiniteStateMachine<TState, TTrigger, TTag> : IDisposable
         }
     }
 
-    public void ClearBackNavigation() => this.navigationStack.Clear();
-
     /// <summary> The tag for the current state of the machine </summary>
     /// <remarks> can be null </remarks>
     public TTag? Tag => this.StateDefinitions[this.state].Tag;
@@ -106,32 +104,95 @@ public class FiniteStateMachine<TState, TTrigger, TTag> : IDisposable
         return false;
     }
 
-    public bool HasBackNavigation (out TState state)
+    public void ClearBackNavigation() => this.navigationStack.Clear();
+
+    public bool GoBack()
     {
-        // TODO 
-        state = this.State;
-        return false; 
+        try
+        {
+            TState newState = this.navigationStack.Pop();
+            this.ExecuteTransition(this.State, newState, pushState: false);
+            return true;
+        } 
+        catch (Exception ex)
+        {
+            this.logger.Error("GoBack: Exception thrown" + ex.ToString());
+            throw new Exception("GoBack: Exception thrown", ex);
+        }
     }
 
     public bool CanGoBack(out TState state)
     {
-        // TODO 
         state = this.State;
+        if (this.navigationStack.Count == 0)
+        {
+            return false;
+        }
+
+        state = this.navigationStack.Peek();
+        return true;
+    }
+
+    public bool CanGoNext(out TState state, out TTrigger trigger)
+    {
+        trigger = default;
+        state = this.State;
+        lock (this.lockObject)
+        {
+            this.logger.Debug("Trying to advance  from  " + this.State.ToString());
+            if (!this.StateDefinitions.TryGetValue(this.State, out var stateDefinition))
+            {
+                this.logger.Error("Fire: Invalid state");
+                throw new Exception("Fire: Invalid state");
+            }
+
+            var triggers = stateDefinition.TriggerDefinitions;
+            if ((triggers is null) || (triggers.Count == 0))
+            {
+                this.logger.Debug("No triggers defined for state " + this.State.ToString());
+                return false;
+            }
+
+            // Count valid transitions
+            int validTransitions = 0;
+            foreach (var triggerDefinition in triggers)
+            {
+                var validator = triggerDefinition.Validator;
+                if (validator is not null)
+                {
+                    bool validated = validator.Invoke();
+                    if (validated)
+                    {
+                        ++validTransitions;
+                        state = triggerDefinition.ToState;
+                        trigger = triggerDefinition.Trigger;
+                        this.logger.Debug("Can Advance: To state " + state.ToString() + " " + trigger.ToString());
+                    }
+                }
+            }
+
+            if (validTransitions == 1)
+            {
+                return true;
+            }
+        }
+
+        this.logger.Debug("Can Advance: No valid transitions ");
         return false;
     }
 
-    public bool CanAdvance(out TState state)
+    public bool GoNext(TTrigger trigger)
     {
-        // TODO 
-        state = this.State;
-        return false;
-    }
-
-    public bool TryAdvance(out TState state)
-    {
-        // TODO 
-        state = this.State;
-        return false;
+        try
+        {
+            this.Fire(trigger);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            this.logger.Error("GoNext: Exception thrown" + ex.ToString());
+            throw new Exception("GoNext: Exception thrown", ex);
+        }
     }
 
     /// <summary> Keeps alive the current transition, a timeout transition, restarting its timer. </summary>
@@ -217,9 +278,13 @@ public class FiniteStateMachine<TState, TTrigger, TTag> : IDisposable
         }
     }
 
-    private void ExecuteTransition(TState fromState, TState toState)
+    private void ExecuteTransition(TState fromState, TState toState, bool pushState = true)
     {
-        // Start new timeout timer if needed, use new state to lookup
+        if (pushState)
+        {
+            this.navigationStack.Push(fromState);
+        }
+
         if (!this.StateDefinitions.TryGetValue(fromState, out var stateDefinition))
         {
             this.logger.Error("ExecuteTransition: Invalid new state");
@@ -288,7 +353,7 @@ public class FiniteStateMachine<TState, TTrigger, TTag> : IDisposable
             this.CancelTimer();
         }
 
-        this.timer = new System.Timers.Timer() { AutoReset = false, Interval = millisec, }; 
+        this.timer = new System.Timers.Timer() { AutoReset = false, Interval = millisec, };
         this.timer.Elapsed += this.OnTimerElapsed;
         this.timer.Start();
     }
@@ -353,7 +418,7 @@ public class FiniteStateMachine<TState, TTrigger, TTag> : IDisposable
         {
             // Is this state machine properly defined ? 
             // State Machine is not initialized or failed to initialize.
-            if (Debugger.IsAttached) { Debugger.Break(); }            
+            if (Debugger.IsAttached) { Debugger.Break(); }
             string msg = "State Machine is already initialized.";
             this.logger.Error(msg);
             throw new InvalidOperationException(msg);
