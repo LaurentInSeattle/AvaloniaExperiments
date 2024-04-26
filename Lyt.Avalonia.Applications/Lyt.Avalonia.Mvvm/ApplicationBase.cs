@@ -1,51 +1,39 @@
 ﻿namespace Lyt.Avalonia.Mvvm;
 
-public class ApplicationBase : Application
-{
-    // To enforce single instance 
-    private static FileStream? LockFile;
-
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+public class ApplicationBase(
+    string organizationKey,
+    string applicationKey,
+    Type mainWindowType,
+    Type applicationModelType,
+    List<Type> modelTypes,
+    List<Type> singletonTypes,
+    List<Tuple<Type, Type>> servicesInterfaceAndType,
+    bool singleInstanceRequested = false) : Application
+{
     // The host cannot be null or else there is no app...
     public static IHost AppHost { get; private set; }
 
     // Logger will never be null or else the app did not take off
     public ILogger Logger { get; private set; }
 
-    private readonly string organizationKey;
-    private readonly string applicationKey;
-    private readonly Type mainWindowType;
-    private readonly Type applicationModelType;
-    private readonly List<Type> modelTypes;
-    private readonly List<Type> singletonTypes;
-    private readonly List<Tuple<Type, Type>> servicesInterfaceAndType;
-    private readonly List<Type> validatedModelTypes;
-    private readonly bool singleInstanceRequested;
+#pragma warning restore CS8618 
+
+    // To enforce single instance 
+    private static FileStream? LockFile;
+
+    private readonly string organizationKey = organizationKey;
+    private readonly string applicationKey = applicationKey;
+    private readonly Type mainWindowType = mainWindowType;
+    private readonly Type applicationModelType = applicationModelType;
+    private readonly List<Type> modelTypes = modelTypes;
+    private readonly List<Type> singletonTypes = singletonTypes;
+    private readonly List<Tuple<Type, Type>> servicesInterfaceAndType = servicesInterfaceAndType;
+    private readonly List<Type> validatedModelTypes = [];
+    private readonly bool singleInstanceRequested = singleInstanceRequested;
 
     private IClassicDesktopStyleApplicationLifetime? desktop ;
-
-    public ApplicationBase(
-#pragma warning restore CS8618 
-        string organizationKey,
-        string applicationKey,
-        Type mainWindowType,
-        Type applicationModelType,
-        List<Type> modelTypes,
-        List<Type> singletonTypes,
-        List<Tuple<Type, Type>> servicesInterfaceAndType,
-        bool singleInstanceRequested = false)
-    {
-        this.organizationKey = organizationKey;
-        this.applicationKey = applicationKey;
-        this.mainWindowType = mainWindowType;
-        this.applicationModelType = applicationModelType;
-        this.modelTypes = modelTypes;
-        this.singletonTypes = singletonTypes;
-        this.servicesInterfaceAndType = servicesInterfaceAndType;
-        this.singleInstanceRequested = singleInstanceRequested;
-
-        this.validatedModelTypes = [];
-    }
 
     public override async void OnFrameworkInitializationCompleted()
     {
