@@ -28,9 +28,7 @@ public sealed class WorkflowManager<TState, TTrigger>
 
     public WorkflowPage<TState, TTrigger>? ActivePage { get; private set; }
 
-    public Move IsMoving { get; private set; }
-
-    public bool IsTransitioning => this.IsMoving != Move.NotMoving;
+    public bool IsTransitioning { get; private set; }
 
     public void CreateWorkflowPages(IEnumerable<WorkflowPage<TState, TTrigger>> pages)
     {
@@ -166,7 +164,6 @@ public sealed class WorkflowManager<TState, TTrigger>
 
     private async Task<bool> TryGoBack(int fadeDuration = DefaultAnimationDuration)
     {
-        this.IsMoving = Move.NotMoving;
         var oldState = this.stateMachine.State;
         if (!this.CanGoBack(out TState newState))
         {
@@ -174,12 +171,12 @@ public sealed class WorkflowManager<TState, TTrigger>
             return false;
         }
 
-        this.IsMoving = Move.Backward;
+        this.IsTransitioning = true;
         this.UpdateVisuals();
         this.stateMachine.GoBack();
         var deactivated = await this.DeactivatePage(oldState, fadeDuration);
         var activated = await this.ActivatePage(newState, fadeDuration);
-        this.IsMoving = Move.NotMoving;
+        this.IsTransitioning = false;
         this.UpdateVisuals();
 
         // Raise the Navigate weak event so that workflow related widgets, if any, will dismiss.
@@ -193,18 +190,17 @@ public sealed class WorkflowManager<TState, TTrigger>
 
     private async Task<bool> TryGoNext(int fadeDuration = DefaultAnimationDuration)
     {
-        this.IsMoving = Move.NotMoving;
         this.UpdateVisuals();
         var oldState = this.stateMachine.State;
         bool canGoNext = this.stateMachine.CanGoNext(out TState newState, out TTrigger trigger);
         if (canGoNext)
         {
-            this.IsMoving = Move.Forward;
+            this.IsTransitioning = true;
             this.UpdateVisuals();
             this.stateMachine.GoNext(trigger);
             var deactivated = await this.DeactivatePage(oldState, fadeDuration);
             var activated = await this.ActivatePage(newState, fadeDuration);
-            this.IsMoving = Move.NotMoving;
+            this.IsTransitioning = false;
             this.UpdateVisuals();
 
             // Raise the Navigate weak event so that workflow related widgets, if any, will dismiss.
