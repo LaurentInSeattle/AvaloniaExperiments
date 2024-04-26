@@ -156,11 +156,7 @@ public sealed class WorkflowManager<TState, TTrigger>
         return this.stateMachine.CanGoNext(out state, out trigger);
     }
 
-    public bool CanFire(TTrigger trigger)
-    {
-        // TODO 
-        return true;
-    }
+    public bool CanFire(TTrigger trigger) => this.stateMachine.CanFire(trigger);
 
     private async Task<bool> TryGoBack(int fadeDuration = DefaultAnimationDuration)
     {
@@ -216,9 +212,29 @@ public sealed class WorkflowManager<TState, TTrigger>
 
     private async Task<bool> TryFire(TTrigger trigger, int fadeDuration)
     {
-        // TODO 
-        await Task.Delay(fadeDuration);
-        return true;
+        this.UpdateVisuals();
+        var oldState = this.stateMachine.State;
+        bool canFire = this.stateMachine.CanFire(trigger);
+        if (canFire)
+        {
+            this.IsTransitioning = true;
+            this.UpdateVisuals();
+            this.stateMachine.Fire(trigger);
+            TState newState = this.stateMachine.State;
+            var deactivated = await this.DeactivatePage(oldState, fadeDuration);
+            var activated = await this.ActivatePage(newState, fadeDuration);
+            this.IsTransitioning = false;
+            this.UpdateVisuals();
+
+            // Raise the Navigate weak event so that workflow related widgets, if any, will dismiss.
+            this.messenger.Publish(new NavigationMessage(activated, deactivated));
+
+            string message =
+                string.Format("Forward workflow transition from: {0} to {1}", oldState.ToString(), newState.ToString());
+            this.logger.Info(message);
+        }
+
+        return canFire;
     }
 
     private async Task<WorkflowPage<TState, TTrigger>?> DeactivatePage(

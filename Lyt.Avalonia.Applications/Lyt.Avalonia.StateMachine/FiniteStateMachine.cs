@@ -217,9 +217,9 @@ public class FiniteStateMachine<TState, TTrigger, TTag> : IDisposable
         }
     }
 
-    /// <summary> If valid, Fires the transition, identified by its trigger </summary>
-    /// <returns> True if successfule transition</returns>
-    public bool Fire(TTrigger trigger)
+    /// <summary> Check if the transition, identified by its trigger, can be fired </summary>
+    /// <returns> True if successfull </returns>
+    public bool CanFire(TTrigger trigger)
     {
         this.CheckInitialized();
 
@@ -272,10 +272,42 @@ public class FiniteStateMachine<TState, TTrigger, TTag> : IDisposable
                 return false;
             }
 
-            this.ExecuteTransition(this.State, triggerDefinition.ToState);
-            this.logger.Info("Transition complete, new state:  " + this.State.ToString());
             return true;
         }
+    }
+
+    /// <summary> If valid, Fires the transition, identified by its trigger </summary>
+    /// <returns> True if successfule transition</returns>
+    public bool Fire(TTrigger trigger)
+    {
+        try
+        {
+            if ( this.CanFire(trigger))
+            {
+                if (this.StateDefinitions.TryGetValue(this.State, out var stateDefinition))
+                {
+                    var triggers = stateDefinition.TriggerDefinitions;
+                    var triggerDefinition =
+                        (from triggerDef in triggers
+                         where triggerDef.Trigger.Equals(trigger)
+                         select triggerDef)
+                         .FirstOrDefault();
+                    if ( triggerDefinition is not null)
+                    {
+                        this.ExecuteTransition(this.State, triggerDefinition.ToState);
+                        this.logger.Info("Transition complete, new state:  " + this.State.ToString());
+                        return true;
+                    }
+                } 
+            }
+        }
+        catch (Exception ex)
+        {
+            this.logger.Error("GoNext: Exception thrown" + ex.ToString());
+            throw new Exception("GoNext: Exception thrown", ex);
+        }
+
+        return false;
     }
 
     private void ExecuteTransition(TState fromState, TState toState, bool pushState = true)
