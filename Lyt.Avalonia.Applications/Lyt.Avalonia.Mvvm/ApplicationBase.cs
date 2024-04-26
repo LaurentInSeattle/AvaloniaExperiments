@@ -2,6 +2,9 @@
 
 public class ApplicationBase : Application
 {
+    // To enforce single instance 
+    private static FileStream? LockFile;
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     // The host cannot be null or else there is no app...
     public static IHost AppHost { get; private set; }
@@ -9,6 +12,7 @@ public class ApplicationBase : Application
     // Logger will never be null or else the app did not take off
     public ILogger Logger { get; private set; }
 
+    private readonly string organizationKey;
     private readonly string applicationKey;
     private readonly Type mainWindowType;
     private readonly Type applicationModelType;
@@ -16,62 +20,59 @@ public class ApplicationBase : Application
     private readonly List<Type> singletonTypes;
     private readonly List<Tuple<Type, Type>> servicesInterfaceAndType;
     private readonly List<Type> validatedModelTypes;
+    private readonly bool singleInstanceRequested;
+
+    private IClassicDesktopStyleApplicationLifetime? desktop ;
 
     public ApplicationBase(
 #pragma warning restore CS8618 
+        string organizationKey,
         string applicationKey,
         Type mainWindowType,
         Type applicationModelType,
         List<Type> modelTypes,
         List<Type> singletonTypes,
         List<Tuple<Type, Type>> servicesInterfaceAndType,
-        bool isSingleInstance = false)
+        bool singleInstanceRequested = false)
     {
+        this.organizationKey = organizationKey;
         this.applicationKey = applicationKey;
         this.mainWindowType = mainWindowType;
         this.applicationModelType = applicationModelType;
         this.modelTypes = modelTypes;
         this.singletonTypes = singletonTypes;
         this.servicesInterfaceAndType = servicesInterfaceAndType;
+        this.singleInstanceRequested = singleInstanceRequested;
 
         this.validatedModelTypes = [];
-
-        //// Enforce single instance 
-        //bool needToWait = false;
-        //if (isSingleInstance)
-        //{
-        //    var executingAssembly = Assembly.GetExecutingAssembly();
-        //    //while (AssemblyHelpers.IsAlreadyRunning(executingAssembly))
-        //    //{
-        //    //    AssemblyHelpers.KillOldestInstance(executingAssembly);
-        //    //    needToWait = true;
-        //    //}
-        //}
-
-        //if (needToWait)
-        //{
-        //    Schedule.OnUiThread(50, this.Initialize, DispatcherPriority.Normal);
-        //}
-        //else
-        //{
-        //    this.Initialize();
-        //}
     }
 
     public override async void OnFrameworkInitializationCompleted()
     {
+        if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
+        {
+            this.desktop = lifetime;
+        }
+
+        // Enforce single instance if requested 
+        if (this.singleInstanceRequested && this.IsAlreadyRunning() && (this.desktop is not null))
+        {
+            this.ForceShutdown();
+            return;
+        }
+
         this.InitializeHosting();
 
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
 
-        if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        if (this.desktop is not null)
         {
             var startupWindow = ApplicationBase.GetRequiredService<Window>();
             if (startupWindow is Window window)
             {
-                desktop.MainWindow = window;
+                this.desktop.MainWindow = window;
             }
             else
             {
@@ -88,8 +89,7 @@ public class ApplicationBase : Application
         }
 
         base.OnFrameworkInitializationCompleted();
-
-        await this.OnStartup(); 
+        await this.OnStartup();
     }
 
     private void InitializeHosting()
@@ -171,8 +171,8 @@ public class ApplicationBase : Application
 
         return models;
     }
-    
-    private async Task OnStartup ()
+
+    private async Task OnStartup()
     {
         await ApplicationBase.AppHost.StartAsync();
 
@@ -208,9 +208,9 @@ public class ApplicationBase : Application
         foreach (Type type in this.validatedModelTypes)
         {
             object model = ApplicationBase.AppHost!.Services.GetRequiredService(type);
-            if ( model is not IModel)
+            if (model is not IModel)
             {
-                throw new ApplicationException("Failed to warmup model: " + type.FullName );
+                throw new ApplicationException("Failed to warmup model: " + type.FullName);
             }
         }
     }
@@ -222,5 +222,48 @@ public class ApplicationBase : Application
         IApplicationModel applicationModel = ApplicationBase.GetRequiredService<IApplicationModel>();
         await applicationModel.Shutdown();
         await ApplicationBase.AppHost!.StopAsync();
+        this.ForceShutdown();
+    }
+
+    private void ForceShutdown ()
+    {
+        if (this.desktop is not null)
+        {
+            this.desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            this.desktop.Shutdown();
+        } 
+    }
+
+    private bool IsAlreadyRunning()
+    {
+        if (OperatingSystem.IsMacOS() || OperatingSystem.IsMacCatalyst())
+        {
+            // No multiple instances on Mac 
+            return false;
+        }
+        else
+        {
+            // Windows or Unix
+            try
+            {
+                string directory =
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), this.organizationKey);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                string filePath = Path.Combine(directory, string.Concat (this.applicationKey, ".lock"));
+                ApplicationBase.LockFile = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+                if (ApplicationBase.LockFile is not null)
+                {
+                    ApplicationBase.LockFile.Lock(0, 0);
+                    return false;
+                }
+            }
+            catch { /* Swallow */  }
+
+            return true;
+        }
     }
 }

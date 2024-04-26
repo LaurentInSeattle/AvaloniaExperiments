@@ -2,23 +2,25 @@
 
 public partial class App : ApplicationBase
 {
-    public App(): base(
-        "MvvmTest",
+    public App() : base(
+        "Lyt",
+        "Avalonia.MvvmTest",
         typeof(MainWindow),
         typeof(ApplicationModelBase), // Top level model 
         [
             // Models 
             typeof(TimingModel)
-        ], 
+        ],
         [
            // Singletons
            typeof(ShellViewModel)
-        ], 
+        ],
         [
             // Services 
             new Tuple<Type, Type>(typeof(ILogger), typeof(Logger)),
             new Tuple<Type, Type>(typeof(IMessenger), typeof(Messenger)),
-        ])        
+        ],
+        singleInstanceRequested: true)
     {
     }
 
