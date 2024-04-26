@@ -1,8 +1,8 @@
 ﻿namespace Lyt.Avalonia.StateMachine;
 
-public sealed class StateDefinition<TState, TTrigger>(
+public sealed class StateDefinition<TState, TTrigger, TTag>(
     TState state,
-    object? tag, 
+    TTag? tag, 
     Action<TState>? onEnter,
     Action<TState>? onLeave,
     Action<TState>? onTimeout,
@@ -13,7 +13,7 @@ public sealed class StateDefinition<TState, TTrigger>(
 {
     public TState State { get; private set; } = state;
 
-    public object? Tag { get; private set; } = tag;
+    public TTag? Tag { get; private set; } = tag;
 
     public Action<TState>? OnEnter { get; private set; } = onEnter;
 

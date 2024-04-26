@@ -1,19 +1,16 @@
-﻿namespace Lyt.Avalonia.StateMachine;
+﻿using Lyt.Avalonia.Interfaces;
 
-public class FiniteStateMachine<TState, TTrigger> : IDisposable
+namespace Lyt.Avalonia.StateMachine;
+
+public class FiniteStateMachine<TState, TTrigger, TTag> : IDisposable
     where TState : struct, Enum
     where TTrigger : struct, Enum
 {
-    private readonly object lockObject = new();
+    private readonly object lockObject;
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private readonly ILogger logger;
 
-    // Frozen dictionaries cannot be created in the constructor, but by design, should never ever change or become null
-
-    /// <summary> State Definitions  indexed by State. </summary>
-    protected FrozenDictionary<TState, StateDefinition<TState, TTrigger>> StateDefinitions { get; private set; }
-
-#pragma warning restore CS8618
+    private readonly Stack<TState> navigationStack;
 
     private TState state;
 
@@ -28,6 +25,20 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
     private System.Timers.Timer? timer;
 
     private bool disposedValue;
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    // Frozen dictionaries cannot be created in the constructor, but by design, should never ever change or become null
+    /// <summary> State Definitions  indexed by State. </summary>
+    protected FrozenDictionary<TState, StateDefinition<TState, TTrigger, TTag>> StateDefinitions { get; private set; }
+
+    public FiniteStateMachine(ILogger logger)
+    {
+#pragma warning restore CS8618
+
+        this.logger = logger;
+        this.lockObject = new();
+        this.navigationStack = new Stack<TState>();
+    }
 
     /// <summary> The current state of the machine </summary>
     public TState State
@@ -44,9 +55,11 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
         }
     }
 
+    public void ClearBackNavigation() => this.navigationStack.Clear();
+
     /// <summary> The tag for the current state of the machine </summary>
     /// <remarks> can be null </remarks>
-    public object? Tag => this.StateDefinitions[this.state].Tag;
+    public TTag? Tag => this.StateDefinitions[this.state].Tag;
 
     /// <summary> True if the machine is properly initialized.</summary>
     public bool IsInitialized { get; private set; }
@@ -70,7 +83,7 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
 
     /// <summary> Initializes the state machine providing all definitions.</summary>
     /// <remarks> Can be done only once! </remarks>
-    public bool Initialize(StateMachineDefinition<TState, TTrigger> stateMachineDefinition)
+    public bool Initialize(StateMachineDefinition<TState, TTrigger, TTag> stateMachineDefinition)
     {
         this.CheckNotInitialized();
         try
@@ -86,10 +99,38 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
         }
         catch (Exception ex)
         {
-            Debug.Write(ex);
+            this.logger.Error(ex.ToString());
             this.CheckInitialized();
         }
 
+        return false;
+    }
+
+    public bool HasBackNavigation (out TState state)
+    {
+        // TODO 
+        state = this.State;
+        return false; 
+    }
+
+    public bool CanGoBack(out TState state)
+    {
+        // TODO 
+        state = this.State;
+        return false;
+    }
+
+    public bool CanAdvance(out TState state)
+    {
+        // TODO 
+        state = this.State;
+        return false;
+    }
+
+    public bool TryAdvance(out TState state)
+    {
+        // TODO 
+        state = this.State;
         return false;
     }
 
@@ -105,7 +146,8 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
         // Start new timeout timer 
         if (!this.StateDefinitions.TryGetValue(this.State, out var stateDefinition))
         {
-            throw new Exception("Invalid state");
+            this.logger.Error("Keep Alive: Invalid state");
+            throw new Exception("Keep Alive: Invalid state");
         }
 
         if (stateDefinition.TimeoutDefinition is not null)
@@ -124,6 +166,7 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
         {
             // The -> SAME <- thread holds the lock: Not good... 
             // Prevents OnEnter and OnLeave to deadlock the state machine by recursive invocations
+            this.logger.Error("The current thread is already firing a trigger.");
             throw new Exception("The current thread is already firing a trigger.");
         }
 
@@ -132,13 +175,14 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
             Debug.WriteLine("Trying to trigger " + trigger.ToString() + "  from  " + this.State.ToString());
             if (!this.StateDefinitions.TryGetValue(this.State, out var stateDefinition))
             {
-                throw new Exception("Invalid state");
+                this.logger.Error("Fire: Invalid state");
+                throw new Exception("Fire: Invalid state");
             }
 
             var triggers = stateDefinition.TriggerDefinitions;
             if ((triggers is null) || (triggers.Count == 0))
             {
-                Debug.WriteLine("No triggers defined for state " + this.State.ToString());
+                this.logger.Info("No triggers defined for state " + this.State.ToString());
                 return false;
             }
 
@@ -149,7 +193,7 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
                  .FirstOrDefault();
             if (triggerDefinition is null)
             {
-                Debug.WriteLine(this.State.ToString() + " cannot be triggered by " + trigger.ToString());
+                this.logger.Info(this.State.ToString() + " cannot be triggered by " + trigger.ToString());
                 return false;
             }
 
@@ -163,12 +207,12 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
 
             if (!validated)
             {
-                Debug.WriteLine(this.State.ToString() + "; Validator cancelled trigger: " + trigger.ToString());
+                this.logger.Info(this.State.ToString() + "; Validator cancelled trigger: " + trigger.ToString());
                 return false;
             }
 
             this.ExecuteTransition(this.State, triggerDefinition.ToState);
-            Debug.WriteLine("Transition complete, new state:  " + this.State.ToString());
+            this.logger.Info("Transition complete, new state:  " + this.State.ToString());
             return true;
         }
     }
@@ -178,7 +222,8 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
         // Start new timeout timer if needed, use new state to lookup
         if (!this.StateDefinitions.TryGetValue(fromState, out var stateDefinition))
         {
-            throw new Exception("Invalid new state");
+            this.logger.Error("ExecuteTransition: Invalid new state");
+            throw new Exception("ExecuteTransition: Invalid new state");
         }
 
         // Invoke current state leave delegate, if any
@@ -194,7 +239,8 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
         // Start new timeout timer if needed, use new state to lookup
         if (!this.StateDefinitions.TryGetValue(toState, out var toStateDefinition))
         {
-            throw new Exception("Invalid new state");
+            this.logger.Error("ExecuteTransition: Invalid new state");
+            throw new Exception("ExecuteTransition: Invalid new state");
         }
 
         var timeoutDefinition = toStateDefinition.TimeoutDefinition;
@@ -223,12 +269,14 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
     {
         if (millisec <= 0)
         {
-            throw new Exception("Timeout zero or negative, for state: " + this.State.ToString());
+            string msg = "Timeout zero or negative, for state: " + this.State.ToString();
+            this.logger.Error(msg);
+            throw new Exception(msg);
         }
 
         if (millisec < 50)
         {
-            Debug.WriteLine("Cannot handle timeout shorter than 50 ms, for state: " + this.State.ToString());
+            this.logger.Warning("Cannot handle timeout shorter than 50 ms, for state: " + this.State.ToString());
             return;
         }
 
@@ -240,11 +288,7 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
             this.CancelTimer();
         }
 
-        this.timer = new System.Timers.Timer()
-        {
-            AutoReset = false,
-            Interval = millisec,
-        };
+        this.timer = new System.Timers.Timer() { AutoReset = false, Interval = millisec, }; 
         this.timer.Elapsed += this.OnTimerElapsed;
         this.timer.Start();
     }
@@ -258,7 +302,7 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
             if (!this.stateTimerStart.Equals(this.State))
             {
                 // Race condition: State changed while we were waiting for the lock
-                Debug.WriteLine(
+                this.logger.Warning(
                     "Race condition: State changed while we were waiting for the lock: Expected: " +
                     this.stateTimerStart.ToString() + "   Now: " + this.State.ToString());
                 return;
@@ -266,14 +310,15 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
 
             if (!this.StateDefinitions.TryGetValue(this.State, out var stateDefinition))
             {
-                throw new Exception("Invalid state");
+                this.logger.Error("OnTimerElapsed: Invalid new state");
+                throw new Exception("OnTimerElapsed: Invalid new state");
             }
 
             var timeoutDefinition = stateDefinition.TimeoutDefinition;
             if (timeoutDefinition is null)
             {
                 // Race condition: State changed while we were waiting for the lock
-                Debug.WriteLine("No timeout defined for state " + this.State.ToString());
+                this.logger.Warning("No timeout defined for state " + this.State.ToString());
                 return;
             }
 
@@ -295,7 +340,9 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
             // Is this state machine properly defined ? 
             // State Machine is not initialized or failed to initialize.
             if (Debugger.IsAttached) { Debugger.Break(); }
-            throw new InvalidOperationException("State Machine is not initialized or failed to initialize.");
+            string msg = "State Machine is not initialized or failed to initialize.";
+            this.logger.Error(msg);
+            throw new InvalidOperationException(msg);
         }
     }
 
@@ -306,8 +353,10 @@ public class FiniteStateMachine<TState, TTrigger> : IDisposable
         {
             // Is this state machine properly defined ? 
             // State Machine is not initialized or failed to initialize.
-            if (Debugger.IsAttached) { Debugger.Break(); }
-            throw new InvalidOperationException("State Machine is already initialized.");
+            if (Debugger.IsAttached) { Debugger.Break(); }            
+            string msg = "State Machine is already initialized.";
+            this.logger.Error(msg);
+            throw new InvalidOperationException(msg);
         }
     }
 

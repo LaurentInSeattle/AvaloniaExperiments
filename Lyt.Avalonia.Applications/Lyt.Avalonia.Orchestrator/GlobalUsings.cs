@@ -20,6 +20,9 @@ global using Avalonia.Controls.ApplicationLifetimes;
 global using Avalonia.Data.Core.Plugins;
 global using Avalonia.Markup.Xaml;
 global using Avalonia.Threading;
+global using Avalonia.Interactivity;
+global using Avalonia.Layout;
+global using Avalonia.Media;
 
 global using Lyt.Avalonia.Interfaces;
 global using Lyt.Avalonia.Interfaces.Model;
@@ -29,5 +32,7 @@ global using Lyt.Avalonia.Mvvm.Core;
 global using Lyt.Avalonia.Mvvm.Messenger;
 global using Lyt.Avalonia.Mvvm.Models;
 global using Lyt.Avalonia.Mvvm.Utilities;
+global using Lyt.Avalonia.StateMachine;
+
 
 
