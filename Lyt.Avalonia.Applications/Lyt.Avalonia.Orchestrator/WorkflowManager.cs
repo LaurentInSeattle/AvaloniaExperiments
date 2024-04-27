@@ -48,7 +48,12 @@ public sealed class WorkflowManager<TState, TTrigger> : IDisposable
                 var page = stateDefinition.Tag as WorkflowPage<TState, TTrigger>;
                 if (page is not null)
                 {
+                    page.WorkflowManager = this; 
                     this.pageIndex.Add(state, page);
+                }
+                else
+                {
+                    this.logger.Error("Improperly defined state machine: " + state.ToString());
                 }
             }
         }
@@ -77,7 +82,6 @@ public sealed class WorkflowManager<TState, TTrigger> : IDisposable
 
     public async Task Start()
     {
-        // this.stateMachine.Start();
         var newState = this.stateMachine.State;
         var activated = await this.ActivatePage(newState);
         this.UpdateVisuals();

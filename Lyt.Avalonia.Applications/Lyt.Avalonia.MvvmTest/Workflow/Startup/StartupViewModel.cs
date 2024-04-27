@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Lyt.Avalonia.MvvmTest.Workflow.Startup;
 
-namespace Lyt.Avalonia.MvvmTest.Workflow.Startup
+public sealed class StartupViewModel : WorkflowPage<WorkflowState, WorkflowTrigger>
 {
-    internal class StartupViewModel
-    {
-    }
 }

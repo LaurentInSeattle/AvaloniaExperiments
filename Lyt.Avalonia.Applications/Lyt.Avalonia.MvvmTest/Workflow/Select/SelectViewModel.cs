@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Lyt.Avalonia.MvvmTest.Workflow.Select;
 
-namespace Lyt.Avalonia.MvvmTest.Workflow.Select
+public sealed class SelectViewModel : WorkflowPage<WorkflowState, WorkflowTrigger>
 {
-    internal class SelectViewModel
-    {
-    }
 }

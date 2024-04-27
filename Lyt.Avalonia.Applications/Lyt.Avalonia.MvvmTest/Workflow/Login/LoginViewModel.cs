@@ -1,6 +1,5 @@
-﻿
-namespace Lyt.Avalonia.MvvmTest.Workflow.Login;
+﻿namespace Lyt.Avalonia.MvvmTest.Workflow.Login;
 
-public sealed class LoginViewModel : Bindable<LoginView>
+public sealed class LoginViewModel : WorkflowPage<WorkflowState, WorkflowTrigger> 
 {
 }

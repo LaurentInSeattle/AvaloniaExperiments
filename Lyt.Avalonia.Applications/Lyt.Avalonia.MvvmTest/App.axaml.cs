@@ -9,11 +9,16 @@ public partial class App : ApplicationBase
         typeof(ApplicationModelBase), // Top level model 
         [
             // Models 
-            typeof(TimingModel)
+            typeof(TimingModel),
+            typeof(UserAdministrationModel),
         ],
         [
            // Singletons
-           typeof(ShellViewModel)
+           typeof(ShellViewModel),
+           typeof(StartupViewModel),
+           typeof(LoginViewModel),
+           typeof(SelectViewModel),
+           typeof(ProcessViewModel),
         ],
         [
             // Services 

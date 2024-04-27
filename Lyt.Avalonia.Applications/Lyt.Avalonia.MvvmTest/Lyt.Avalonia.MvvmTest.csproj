@@ -30,6 +30,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
     <ProjectReference Include="..\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
+    <ProjectReference Include="..\Lyt.Avalonia.Orchestrator\Lyt.Avalonia.Orchestrator.csproj" />
+    <ProjectReference Include="..\Lyt.Avalonia.UsersAdministration\Lyt.Avalonia.UserAdministration.csproj" />
   </ItemGroup>
 
 </Project>
