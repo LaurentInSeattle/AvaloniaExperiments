@@ -11,6 +11,7 @@ public sealed class WorkflowManager<TState, TTrigger> : IDisposable
     private readonly IMessenger messenger;
     private readonly FiniteStateMachine<TState, TTrigger, Bindable> stateMachine;
     private readonly Dictionary<TState, WorkflowPage<TState, TTrigger>> pageIndex;
+    private readonly Grid navigationGrid;
 
     private bool disposedValue;
 
@@ -27,6 +28,13 @@ public sealed class WorkflowManager<TState, TTrigger> : IDisposable
         this.HostControl = hostControl;
         this.stateMachine = new(this.logger);
         this.pageIndex = [];
+        this.navigationGrid = new Grid()
+        {
+            Background = Brushes.Transparent,
+            VerticalAlignment = VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+        };
+        this.HostControl.Content = this.navigationGrid;
         this.CreateWorkflowStateMachine(stateMachineDefinition);
     }
 
@@ -50,10 +58,20 @@ public sealed class WorkflowManager<TState, TTrigger> : IDisposable
                 {
                     page.WorkflowManager = this; 
                     this.pageIndex.Add(state, page);
+                    var element = page.Control;
+                    if ( element is not null )
+                    { 
+                        this.navigationGrid.Children.Add(element);
+                        element.IsVisible = false;
+                    }
+                    else
+                    {
+                        this.logger.Error("Page missing its control - Improperly defined state machine: " + state.ToString());
+                    }
                 }
                 else
                 {
-                    this.logger.Error("Improperly defined state machine: " + state.ToString());
+                    this.logger.Error("Null page or not Workflow Page: Improperly defined state machine: " + state.ToString());
                 }
             }
         }
@@ -64,11 +82,11 @@ public sealed class WorkflowManager<TState, TTrigger> : IDisposable
         }
     }
 
-    public void Initialize()
+    public async Task Initialize()
     {
         foreach (var page in this.pageIndex.Values)
         {
-            page.OnInitialize();
+            await page.OnInitialize();
         }
     }
 

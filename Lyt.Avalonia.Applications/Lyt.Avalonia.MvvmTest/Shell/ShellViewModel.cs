@@ -1,7 +1,4 @@
-﻿using Lyt.Avalonia.Orchestrator;
-using Lyt.Avalonia.StateMachine;
-
-namespace Lyt.Avalonia.MvvmTest.Shell;
+﻿namespace Lyt.Avalonia.MvvmTest.Shell;
 
 public sealed class ShellViewModel : Bindable<ShellView>
 {
@@ -13,14 +10,14 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.timingModel.SubscribeToUpdates(this.OnTimingModelUpdated, withUiDispatch: true);
         this.TickCount = "Hello Avalonia!";
         this.IsTicking = string.Empty;
-        this.OnStartStopCommand = new Command(this.OnStartStop); 
+        this.OnStartStopCommand = new Command(this.OnStartStop);
     }
 
     public WorkflowManager<WorkflowState, WorkflowTrigger>? Workflow { get; private set; }
 
     private void OnStartStop(object? _)
     {
-        if ( this.timingModel.IsTicking)
+        if (this.timingModel.IsTicking)
         {
             this.timingModel.Stop();
         }
@@ -30,14 +27,14 @@ public sealed class ShellViewModel : Bindable<ShellView>
         }
     }
 
-    protected override void OnViewLoaded()
+    protected override async void OnViewLoaded()
     {
         base.OnViewLoaded();
         this.timingModel.Start();
         this.SetupWorkflow();
-        if ( this.Workflow is not null ) 
+        if (this.Workflow is not null)
         {
-            this.Workflow.Initialize();
+            await this.Workflow.Initialize();
             _ = this.Workflow.Start();
         }
     }
@@ -50,41 +47,56 @@ public sealed class ShellViewModel : Bindable<ShellView>
         this.IsTicking = modelIsTicking ? "Ticking" : "Stopped";
         this.ButtonText = modelIsTicking ? "Stop" : "Start";
         Profiler.MemorySnapshot();
+        if (this.Workflow is not null)
+        {
+            var fireAndForget = this.Workflow.Next();
+        }
     }
 
-    private void SetupWorkflow ( )
+    private void SetupWorkflow()
     {
-        static StateDefinition<WorkflowState, WorkflowTrigger, Bindable> Create<TViewModel, TView> (
-            WorkflowState state, WorkflowTrigger trigger, WorkflowState target )
+        StateDefinition<WorkflowState, WorkflowTrigger, Bindable> Create<TViewModel, TView>(
+            WorkflowState state, WorkflowTrigger trigger, WorkflowState target)
             where TViewModel : Bindable, new()
             where TView : Control, new()
         {
             var vm = App.GetRequiredService<TViewModel>();
             vm.Bind(new TView());
-            return
-                new StateDefinition<WorkflowState, WorkflowTrigger, Bindable> (
-                    state, vm, null, null, null, null,
-                    [
-                        new TriggerDefinition<WorkflowState, WorkflowTrigger> ( trigger, target , null )
-                    ]);
+            if (vm is WorkflowPage<WorkflowState, WorkflowTrigger> page)
+            {
+                page.State = state;
+                page.Title = state.ToString();
+                return
+                    new StateDefinition<WorkflowState, WorkflowTrigger, Bindable>(
+                        state, page, null, null, null, null,
+                        [
+                            new TriggerDefinition<WorkflowState, WorkflowTrigger> ( trigger, target , null )
+                        ]);
+            }
+            else
+            {
+                string msg = "View is not a Workflow Page";
+                this.Logger.Error(msg);
+                throw new Exception(msg);
+            }
         }
 
         var startup = Create<StartupViewModel, StartupView>(WorkflowState.Startup, WorkflowTrigger.Ready, WorkflowState.Login);
-        var login = Create<LoginViewModel, LoginView> (WorkflowState.Login, WorkflowTrigger.LoggedIn, WorkflowState.Select);
-        var select = Create<SelectViewModel, SelectView> (WorkflowState.Select, WorkflowTrigger.Selected, WorkflowState.Process);
-        var process = Create <ProcessViewModel, ProcessView>(WorkflowState.Process, WorkflowTrigger.Complete, WorkflowState.Login);
+        var login = Create<LoginViewModel, LoginView>(WorkflowState.Login, WorkflowTrigger.LoggedIn, WorkflowState.Select);
+        var select = Create<SelectViewModel, SelectView>(WorkflowState.Select, WorkflowTrigger.Selected, WorkflowState.Process);
+        var process = Create<ProcessViewModel, ProcessView>(WorkflowState.Process, WorkflowTrigger.Complete, WorkflowState.Login);
 
-        var stateMachineDefinition = 
-            new StateMachineDefinition<WorkflowState, WorkflowTrigger, Bindable> (
+        var stateMachineDefinition =
+            new StateMachineDefinition<WorkflowState, WorkflowTrigger, Bindable>(
                 WorkflowState.Startup, // Initial state
                 [ 
                     // List of states
                     startup, login , select, process,
-                ]);                     
+                ]);
 
         this.Workflow =
             new WorkflowManager<WorkflowState, WorkflowTrigger>(
-                this.Logger, this.Messenger, this.View!, stateMachineDefinition);
+                this.Logger, this.Messenger, this.View!.WorkflowContent!, stateMachineDefinition);
     }
 
     public ICommand? OnStartStopCommand { get => this.Get<ICommand>(); set => this.Set(value); }

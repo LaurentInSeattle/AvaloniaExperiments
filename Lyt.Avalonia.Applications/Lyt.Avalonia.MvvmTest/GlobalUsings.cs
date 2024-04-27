@@ -31,6 +31,7 @@ global using Lyt.Avalonia.Mvvm.Models;
 global using Lyt.Avalonia.Mvvm.Utilities;
 
 global using Lyt.Avalonia.Orchestrator;
+global using Lyt.Avalonia.StateMachine;
 
 global using Lyt.Avalonia.MvvmTest.Shell;
 global using Lyt.Avalonia.MvvmTest.Models;

@@ -4,9 +4,9 @@ public class WorkflowPage<TState, TTrigger> : Bindable
     where TState : struct, Enum
     where TTrigger : struct, Enum
 {
-    public virtual TState State => default;
+    public virtual TState State { get; set; } = default;
 
-    public virtual string Title => "Unknown";
+    public string? Title { get => this.Get<string>(); set => this.Set(value); }
 
     public virtual Task OnInitialize() => Task.CompletedTask;
 

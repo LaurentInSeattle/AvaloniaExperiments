@@ -12,7 +12,7 @@ public sealed class Profiler
         GC.WaitForPendingFinalizers();
         GC.Collect();
         GCNotificationStatus status = GC.WaitForFullGCComplete();
-        if (Debugger.IsAttached)
+        if (Debugger.IsAttached && status != GCNotificationStatus.NotApplicable)
         {
             Debug.WriteLine("GC Status: " + status.ToString());
         }

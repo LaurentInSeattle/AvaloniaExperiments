@@ -7,5 +7,16 @@
 	x:Class="Lyt.Avalonia.MvvmTest.Workflow.Process.ProcessView"
     xmlns:vm="clr-namespace:Lyt.Avalonia.MvvmTest.Workflow.Process"
     x:DataType="vm:ProcessViewModel" 
-	>
+    Background="Transparent"
+    >
+    <Grid
+        Background="#80A821A3"		
+        >
+		<TextBlock
+            Text="{Binding Title}"
+            FontSize="40"
+            Foreground="DarkOrange"
+            HorizontalAlignment="Center" VerticalAlignment="Center"
+            />
+	</Grid>
 </UserControl>

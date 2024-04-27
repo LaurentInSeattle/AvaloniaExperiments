@@ -157,17 +157,20 @@ public class FiniteStateMachine<TState, TTrigger, TTag> : IDisposable
             int validTransitions = 0;
             foreach (var triggerDefinition in triggers)
             {
+                // Transition is valid if there is no validator 
+                bool validated = true; 
                 var validator = triggerDefinition.Validator;
                 if (validator is not null)
                 {
-                    bool validated = validator.Invoke();
-                    if (validated)
-                    {
-                        ++validTransitions;
-                        state = triggerDefinition.ToState;
-                        trigger = triggerDefinition.Trigger;
-                        this.logger.Debug("Can Advance: To state " + state.ToString() + " " + trigger.ToString());
-                    }
+                    validated = validator.Invoke();
+                }
+
+                if (validated)
+                {
+                    ++validTransitions;
+                    state = triggerDefinition.ToState;
+                    trigger = triggerDefinition.Trigger;
+                    this.logger.Debug("Can Advance: To state " + state.ToString() + " " + trigger.ToString());
                 }
             }
 

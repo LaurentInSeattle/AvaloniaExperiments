@@ -7,5 +7,17 @@
     x:Class="Lyt.Avalonia.MvvmTest.Workflow.Select.SelectView"
     xmlns:vm="clr-namespace:Lyt.Avalonia.MvvmTest.Workflow.Select"
     x:DataType="vm:SelectViewModel" 
-	>
+    Background="Transparent"
+    >
+    <Grid
+        Background="#9028A1A3"		
+        >
+		<TextBlock
+            Text="{Binding Title}"
+            FontSize="40"
+            Foreground="DarkOrange"
+            HorizontalAlignment="Center" VerticalAlignment="Center"
+            />
+
+	</Grid>
 </UserControl>

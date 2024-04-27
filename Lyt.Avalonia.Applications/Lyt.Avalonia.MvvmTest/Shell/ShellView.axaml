@@ -7,6 +7,7 @@
     xmlns:vm="clr-namespace:Lyt.Avalonia.MvvmTest.Shell"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     x:DataType="vm:ShellViewModel" 
+    Background="Transparent"
     >
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -37,14 +38,19 @@
         </Style>
     </UserControl.Styles>	
     <Grid
+        x:Name="InnerGrid"
         Background="Transparent"
-        RowDefinitions="*,60, 60, 60 , *, 60"
+        RowDefinitions="4*,60, 60, 60 , *, 60"
         ShowGridLines="False"
         >
         <Image
             Stretch="UniformToFill"
             Source="\Assets\Images\dark.jpg"
             Grid.ColumnSpan="999" Grid.RowSpan="999"
+            />
+        <ContentControl
+            Grid.Row="0"
+            x:Name="WorkflowContent"
             />
         <TextBlock 
             Grid.Row="1"
