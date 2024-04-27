@@ -49,7 +49,9 @@ public sealed class ShellViewModel : Bindable<ShellView>
         Profiler.MemorySnapshot();
         if (this.Workflow is not null)
         {
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
             var fireAndForget = this.Workflow.Next();
+#pragma warning restore IDE0059 
         }
     }
 

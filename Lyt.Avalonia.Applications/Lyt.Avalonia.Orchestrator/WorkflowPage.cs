@@ -16,5 +16,7 @@ public class WorkflowPage<TState, TTrigger> : Bindable
 
     public virtual Task OnDeactivateAsync(TState toState) => Task.CompletedTask;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. 
     public WorkflowManager<TState, TTrigger> WorkflowManager { get; set; }
+#pragma warning restore CS8618 
 }

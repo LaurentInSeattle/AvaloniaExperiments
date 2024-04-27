@@ -27,7 +27,7 @@ public sealed class Profiler
         => [GC.CollectionCount(0), GC.CollectionCount(1), GC.CollectionCount(2)];
 
     [Conditional("DEBUG")]
-    public void Track(
+    public static void Track(
         string message,
         [CallerFilePath] string sourceFilePath = "",
         [CallerLineNumber] int sourceLineNumber = 0)
@@ -39,8 +39,8 @@ public sealed class Profiler
             return;
         }
 
-        var typeName = method.DeclaringType!.Name;
-        var memberName = method.Name;
+        string typeName = method.DeclaringType!.Name;
+        string memberName = method.Name;
         Debug.WriteLine(
             string.Format(
                 "***** {0} -- From {1}.{2} in {3}, line {4}",
