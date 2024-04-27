@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lyt.Avalonia.Mvvm", "Lyt.Av
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lyt.Avalonia.Interfaces", "Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj", "{1EF5716F-46B5-4878-B1F4-821A759C8EF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Avalonia.StateMachine", "Lyt.Avalonia.StateMachine\Lyt.Avalonia.StateMachine.csproj", "{B3567F44-EFDF-4FBA-B978-7B404B855B7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lyt.Avalonia.StateMachine", "Lyt.Avalonia.StateMachine\Lyt.Avalonia.StateMachine.csproj", "{B3567F44-EFDF-4FBA-B978-7B404B855B7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Avalonia.Orchestrator", "Lyt.Avalonia.Orchestrator\Lyt.Avalonia.Orchestrator.csproj", "{EA46285A-34D7-4255-AA89-1E91DFAD1B22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lyt.Avalonia.Orchestrator", "Lyt.Avalonia.Orchestrator\Lyt.Avalonia.Orchestrator.csproj", "{EA46285A-34D7-4255-AA89-1E91DFAD1B22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lyt.Avalonia.UserAdministration", "Lyt.Avalonia.UsersAdministration\Lyt.Avalonia.UserAdministration.csproj", "{CF67FBB2-EDA0-491C-AF38-2D6EEC4253C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{EA46285A-34D7-4255-AA89-1E91DFAD1B22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA46285A-34D7-4255-AA89-1E91DFAD1B22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA46285A-34D7-4255-AA89-1E91DFAD1B22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF67FBB2-EDA0-491C-AF38-2D6EEC4253C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF67FBB2-EDA0-491C-AF38-2D6EEC4253C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF67FBB2-EDA0-491C-AF38-2D6EEC4253C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF67FBB2-EDA0-491C-AF38-2D6EEC4253C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

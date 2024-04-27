@@ -1,6 +1,6 @@
 ﻿namespace Lyt.Avalonia.Orchestrator;
 
-public sealed class WorkflowManager<TState, TTrigger>
+public sealed class WorkflowManager<TState, TTrigger> : IDisposable
     where TState : struct, Enum
     where TTrigger : struct, Enum
 {
@@ -12,15 +12,22 @@ public sealed class WorkflowManager<TState, TTrigger>
     private readonly FiniteStateMachine<TState, TTrigger, Bindable> stateMachine;
     private readonly Dictionary<TState, WorkflowPage<TState, TTrigger>> pageIndex;
 
+    private bool disposedValue;
+
     public ContentControl HostControl { get; private set; }
 
-    public WorkflowManager(ILogger logger, IMessenger messenger, ContentControl hostControl)
+    public WorkflowManager(
+        ILogger logger,
+        IMessenger messenger,
+        ContentControl hostControl,
+        StateMachineDefinition<TState, TTrigger, Bindable> stateMachineDefinition)
     {
         this.logger = logger;
         this.messenger = messenger;
         this.HostControl = hostControl;
         this.stateMachine = new(this.logger);
         this.pageIndex = [];
+        this.CreateWorkflowStateMachine(stateMachineDefinition);
     }
 
     public WorkflowPage<TState, TTrigger>? GetPage(TState state)
@@ -30,49 +37,25 @@ public sealed class WorkflowManager<TState, TTrigger>
 
     public bool IsTransitioning { get; private set; }
 
-    public void CreateWorkflowPages(IEnumerable<WorkflowPage<TState, TTrigger>> pages)
+    private void CreateWorkflowStateMachine(StateMachineDefinition<TState, TTrigger, Bindable> stateMachineDefinition)
     {
-        if (pages.Count() < 2)
-        {
-            this.logger.Error("pages is empty or has only one element");
-            throw new ArgumentException("Empty or has only one element", nameof(pages));
-        }
-
         try
         {
-            // TODO 
-            //
-            //bool isFirst = true;
-            //foreach (var page in pages)
-            //{
-            //    this.machine.CreateState(page.State, isStart: isFirst);
-            //    this.pageIndex.Add(page.State, page);
-            //    this.navigationGrid.Children.Add(page.FrameworkElement);
-            //    page.WorkflowHost = this;
-            //    var element = page.FrameworkElement;
-            //    if (element != null)
-            //    {
-            //        element.Visibility = isFirst ? Visibility.Visible : Visibility.Hidden;
-            //    }
-
-            //    isFirst = false;
-            //}
-
-            //foreach (var page in pages)
-            //{
-            //    foreach (var triggerKvp in page.Triggers)
-            //    {
-            //        var transition = triggerKvp.Key;
-            //        var func = triggerKvp.Value;
-            //        var target = page.Targets[transition];
-            //        bool isBackNavigation = page.BackNavigation[transition];
-            //        this.machine.CreateTransition(transition, page.State, target, func, isBackNavigation);
-            //    }
-            //}
+            this.stateMachine.Initialize(stateMachineDefinition);
+            foreach (StateDefinition<TState, TTrigger, Bindable> stateDefinition in stateMachineDefinition.StateDefinitions)
+            {
+                TState state = stateDefinition.State;
+                var page = stateDefinition.Tag as WorkflowPage<TState, TTrigger>;
+                if (page is not null)
+                {
+                    this.pageIndex.Add(state, page);
+                }
+            }
         }
         catch (Exception e)
         {
             this.logger.Error("Improperly defined state machine:\n" + e.ToString());
+            throw;
         }
     }
 
@@ -278,5 +261,37 @@ public sealed class WorkflowManager<TState, TTrigger>
 
         await this.ActivePage.OnActivateAsync(newState);
         return this.ActivePage;
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (!this.disposedValue)
+        {
+            if (disposing)
+            {
+                // dispose managed state (managed objects)
+                this.stateMachine.Dispose();
+            }
+
+            // free unmanaged resources (unmanaged objects) and override finalizer
+            // set large fields to null
+            this.pageIndex.Clear();
+
+            this.disposedValue = true;
+        }
+    }
+
+    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+    // ~WorkflowManager()
+    // {
+    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+    //     Dispose(disposing: false);
+    // }
+
+    void IDisposable.Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        this.Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 }

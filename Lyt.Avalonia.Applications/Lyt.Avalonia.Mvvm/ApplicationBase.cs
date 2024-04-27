@@ -51,6 +51,12 @@ public class ApplicationBase(
 
         this.InitializeHosting();
 
+        if (Design.IsDesignMode)
+        {
+            base.OnFrameworkInitializationCompleted();
+            return;
+        }
+
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
@@ -67,12 +73,9 @@ public class ApplicationBase(
                 throw new NotImplementedException("Failed to create MainWindow");
             }
         }
-        else if (this.ApplicationLifetime is ISingleViewApplicationLifetime)
+        else 
         {
-            // For designer mode
-        }
-        else
-        {
+            // Should not be in designer mode
             throw new NotImplementedException("Unsupported Application Lifetime");
         }
 

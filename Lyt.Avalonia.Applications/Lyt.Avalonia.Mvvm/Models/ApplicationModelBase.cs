@@ -1,15 +1,9 @@
 ﻿namespace Lyt.Avalonia.Mvvm.Models;
 
-public class ApplicationModelBase : IApplicationModel
+public class ApplicationModelBase(ILogger logger, ApplicationBase application) : IApplicationModel
 {
-    private readonly ILogger logger;
-    private readonly ApplicationBase application; 
-
-    public ApplicationModelBase(ILogger logger, ApplicationBase application)
-    {
-        this.logger = logger;
-        this.application = application;
-    }
+    private readonly ILogger logger = logger;
+    private readonly ApplicationBase application = application;
 
     public async Task Initialize()
     {

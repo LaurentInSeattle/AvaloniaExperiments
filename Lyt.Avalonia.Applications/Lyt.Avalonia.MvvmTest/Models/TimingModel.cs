@@ -2,23 +2,11 @@
 
 public sealed class TimingModel() : ModelBase(), IModel
 {
-    private bool isTicking;
     private DispatcherTimer? dispatcherTimer;
 
-    public int TickCount { get; private set; } = 10_000;
+    public int TickCount { get => this.Get<int>(); set => this.Set(value); }
 
-    public bool IsTicking 
-    { 
-        get => this.isTicking; 
-        private set
-        {
-            if (this.isTicking != value)
-            {
-                this.isTicking = value;
-                base.NotifyUpdate();
-            }
-        }
-    }
+    public bool IsTicking { get => this.Get<bool>(); set => this.Set(value); }
 
     public override Task Initialize()
     {
@@ -36,7 +24,8 @@ public sealed class TimingModel() : ModelBase(), IModel
     {
         if ( this.dispatcherTimer is null)
         {
-            this.dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(3), IsEnabled = false };
+            ++this.TickCount;
+            this.dispatcherTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1), IsEnabled = false };
             this.dispatcherTimer.Tick += this.OnDispatcherTimerTick;
             this.dispatcherTimer.Start();
             this.IsTicking = true;
@@ -54,9 +43,5 @@ public sealed class TimingModel() : ModelBase(), IModel
         }
     }
 
-    private void OnDispatcherTimerTick(object? sender, EventArgs e)
-    {
-        ++this.TickCount;
-        base.NotifyUpdate();
-    } 
+    private void OnDispatcherTimerTick(object? sender, EventArgs e) => ++this.TickCount;
 }
