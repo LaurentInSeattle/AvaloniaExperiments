@@ -1,10 +1,12 @@
-﻿namespace Lyt.Avalonia.Mvvm;
+﻿
+namespace Lyt.Avalonia.Mvvm;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 public class ApplicationBase(
     string organizationKey,
     string applicationKey,
+    string uriString,
     Type mainWindowType,
     Type applicationModelType,
     List<Type> modelTypes,
@@ -18,13 +20,19 @@ public class ApplicationBase(
     // Logger will never be null or else the app did not take off
     public ILogger Logger { get; private set; }
 
-#pragma warning restore CS8618 
+    public StyleManager StyleManager { get; private set; }
+
+#pragma warning restore CS8618
 
     // To enforce single instance 
     private static FileStream? LockFile;
 
     private readonly string organizationKey = organizationKey;
     private readonly string applicationKey = applicationKey;
+#pragma warning disable IDE0052 // Remove unread private members
+    // We may need this one later 
+    private readonly string uriString = uriString;
+#pragma warning restore IDE0052 
     private readonly Type mainWindowType = mainWindowType;
     private readonly Type applicationModelType = applicationModelType;
     private readonly List<Type> modelTypes = modelTypes;
@@ -67,6 +75,7 @@ public class ApplicationBase(
             if (startupWindow is Window window)
             {
                 this.desktop.MainWindow = window;
+                this.StyleManager = new StyleManager(window); 
             }
             else
             {

@@ -2,9 +2,12 @@
 
 public partial class App : ApplicationBase
 {
+    public const string UriString = "resm:Styles?assembly=Lyt.Avalonia.MvvmTest";
+
     public App() : base(
         "Lyt",
         "Avalonia.MvvmTest",
+        App.UriString,
         typeof(MainWindow),
         typeof(ApplicationModelBase), // Top level model 
         [

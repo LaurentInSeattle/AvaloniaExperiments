@@ -68,11 +68,15 @@
             />
         <Button
             Grid.Row="5"
-            Classes="btn"
+            Classes="Button.Primary"
             Content="{Binding ButtonText}" 
             VerticalAlignment="Center" HorizontalAlignment="Right"
             ClickMode="Release"
             Command="{Binding OnStartStopCommand}"
+            
+            Width="160" Height ="40" 
+            FontSize ="20" 
+            Margin =" 12" 
             />
     </Grid>
 </UserControl>

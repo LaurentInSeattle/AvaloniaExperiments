@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
+    <ProjectReference Include="..\Lyt.Avalonia.Themes\Lyt.Avalonia.Themes.csproj" />
   </ItemGroup>
 
 </Project>
