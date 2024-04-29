@@ -34,7 +34,7 @@ public partial class MainWindow : Window
                 async () =>
                 {
                     var app = App.GetRequiredService<ApplicationBase>();
-                    await app.OnShutdown();
+                    await app.Shutdown();
                     this.isShutdownComplete = true;
                     this.Close();
                 }, DispatcherPriority.Normal);

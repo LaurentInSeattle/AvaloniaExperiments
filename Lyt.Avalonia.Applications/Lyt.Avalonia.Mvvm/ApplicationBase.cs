@@ -1,4 +1,6 @@
 ﻿
+using System.Runtime.InteropServices;
+
 namespace Lyt.Avalonia.Mvvm;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -89,7 +91,7 @@ public class ApplicationBase(
         }
 
         base.OnFrameworkInitializationCompleted();
-        await this.OnStartup();
+        await this.Startup();
     }
 
     private void InitializeHosting()
@@ -172,7 +174,11 @@ public class ApplicationBase(
         return models;
     }
 
-    private async Task OnStartup()
+    protected virtual Task OnStartup () => Task.CompletedTask;
+
+    protected virtual Task OnShutdown () => Task.CompletedTask;
+
+    private async Task Startup()
     {
         await ApplicationBase.AppHost.StartAsync();
 
@@ -201,6 +207,7 @@ public class ApplicationBase(
         this.WarmupModels();
         IApplicationModel applicationModel = ApplicationBase.GetRequiredService<IApplicationModel>();
         await applicationModel.Initialize();
+        await this.OnStartup();
     }
 
     private void WarmupModels()
@@ -215,9 +222,11 @@ public class ApplicationBase(
         }
     }
 
-    public async Task OnShutdown()
+    public async Task Shutdown()
     {
         this.Logger.Info("***   Shutdown   ***");
+        await this.OnShutdown();
+
         //startupWindow.Closing += (_, _) => { this.logViewer?.Close(); };
         IApplicationModel applicationModel = ApplicationBase.GetRequiredService<IApplicationModel>();
         await applicationModel.Shutdown();
