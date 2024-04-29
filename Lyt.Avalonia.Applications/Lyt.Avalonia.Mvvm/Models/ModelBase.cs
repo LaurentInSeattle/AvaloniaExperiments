@@ -11,6 +11,8 @@ public abstract class ModelBase : IModel
 
     public abstract Task Initialize();
 
+    public virtual Task Configure(object? modelConfiguration) => Task.CompletedTask;
+
     public virtual Task Shutdown()
     {
         this.Clear();

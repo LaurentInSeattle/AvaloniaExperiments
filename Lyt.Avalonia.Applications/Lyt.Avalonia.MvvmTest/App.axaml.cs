@@ -2,18 +2,21 @@
 
 public partial class App : ApplicationBase
 {
-    public const string UriString = "resm:Styles?assembly=Lyt.Avalonia.MvvmTest";
+    public const string Organization = "Lyt";
+    public const string Application = "AvaloniaMvvmTest";
+    public const string RootNamespace = "Lyt.Avalonia.MvvmTest";
 
     public App() : base(
-        "Lyt",
-        "Avalonia.MvvmTest",
-        App.UriString,
+        App.Organization,
+        App.Application,
+        App.RootNamespace,
         typeof(MainWindow),
         typeof(ApplicationModelBase), // Top level model 
         [
             // Models 
             typeof(TimingModel),
             typeof(UserAdministrationModel),
+            typeof(FileManagerModel),
         ],
         [
            // Singletons
@@ -30,6 +33,8 @@ public partial class App : ApplicationBase
         ],
         singleInstanceRequested: true)
     {
+        var fileManager = App.GetRequiredService<FileManagerModel>();  
+        fileManager.Configure( new FileManagerConfiguration(App.Organization, App.Application, App.RootNamespace) );
     }
 
     // Why does it needs to be there ??? 
