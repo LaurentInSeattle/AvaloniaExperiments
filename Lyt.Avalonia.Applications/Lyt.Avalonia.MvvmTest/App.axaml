@@ -7,10 +7,17 @@
 
     <Application.Styles>
         <FluentTheme />
-    </Application.Styles>
+	</Application.Styles>
 
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="/Assets/Vectors/Icons.axaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Application.Resources>
     <!--
-	xmlns:customcontrols="using:Lyt.Avalonia.Controls"
-	<customcontrols:CustomControls/>
-	-->
+    xmlns:customcontrols="using:Lyt.Avalonia.Controls"
+    <customcontrols:CustomControls/>
+    -->
 </Application>

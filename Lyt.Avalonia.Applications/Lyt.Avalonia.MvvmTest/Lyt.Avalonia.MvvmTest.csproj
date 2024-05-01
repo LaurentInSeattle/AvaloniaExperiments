@@ -31,5 +31,5 @@
     <ProjectReference Include="..\Lyt.Avalonia.Themes\Lyt.Avalonia.Themes.csproj" />
     <ProjectReference Include="..\Lyt.Avalonia.UsersAdministration\Lyt.Avalonia.UserAdministration.csproj" />
   </ItemGroup>
-
+    
 </Project>

@@ -17,8 +17,10 @@ global using Microsoft.Extensions.Hosting;
 global using Avalonia;
 global using Avalonia.Controls;
 global using Avalonia.Controls.ApplicationLifetimes;
+global using Avalonia.Data;
 global using Avalonia.Data.Core.Plugins;
 global using Avalonia.Markup.Xaml;
+global using Avalonia.Media;
 global using Avalonia.Threading;
 
 global using Lyt.Avalonia.Interfaces;
@@ -30,6 +32,7 @@ global using Lyt.Avalonia.Mvvm.Messenger;
 global using Lyt.Avalonia.Mvvm.Models;
 global using Lyt.Avalonia.Mvvm.Utilities;
 
+global using Lyt.Avalonia.Controls;
 global using Lyt.Avalonia.Orchestrator;
 global using Lyt.Avalonia.Persistence;
 global using Lyt.Avalonia.StateMachine;
@@ -42,4 +45,5 @@ global using Lyt.Avalonia.MvvmTest.Workflow.Login;
 global using Lyt.Avalonia.MvvmTest.Workflow.Process;
 global using Lyt.Avalonia.MvvmTest.Workflow.Select;
 global using Lyt.Avalonia.MvvmTest.Workflow.Startup;
+
 

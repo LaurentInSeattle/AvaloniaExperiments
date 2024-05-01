@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Lyt.Avalonia.MvvmTest.Shell"
-    xmlns:ctrl="using:Lyt.Avalonia.Controls"
+    xmlns:ctrl="clr-namespace:Lyt.Avalonia.MvvmTest.Controls"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     x:DataType="vm:ShellViewModel" 
     Background="Transparent"
@@ -52,7 +52,29 @@
         <ContentControl
             Grid.Row="0"
             x:Name="WorkflowContent"
-            />
+            />		
+        <ctrl:SvgIcon
+            Source="power_button"
+            HorizontalAlignment="Right" VerticalAlignment="Top"
+            Margin="12 64 12 12"
+            Wadding="4"
+            Height="32" Width="32"
+            StrokeThickness="1"
+            >
+            <ctrl:SvgIcon.Foreground>
+                <Color>DarkOrchid</Color>
+            </ctrl:SvgIcon.Foreground>
+        </ctrl:SvgIcon>
+        <ctrl:SvgIcon
+            Source="settings"
+            HorizontalAlignment="Right" VerticalAlignment="Top"
+            Margin="12"
+            Wadding="4"
+            Height="32" Width="32"
+            StrokeThickness="1"
+            >
+            <ctrl:SvgIcon.Foreground><Color>DarkOrchid</Color></ctrl:SvgIcon.Foreground>
+        </ctrl:SvgIcon>
         <TextBlock 
             Grid.Row="1"
             Text="{Binding TickCount}" 
