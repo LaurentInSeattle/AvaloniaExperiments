@@ -1,9 +1,11 @@
-namespace Lyt.Avalonia.Controls; 
+namespace Lyt.Avalonia.Controls;
 
 public partial class SvgIcon : UserControl
 {
     // TODO 
     // private const string DefaultSvgIcon = "DefaultSvgIcon";
+
+    private bool imageUpdateRequired;
 
     private DrawingImage? drawingImage;
 
@@ -11,12 +13,12 @@ public partial class SvgIcon : UserControl
 
     public void UpdateImage()
     {
-        if (this.drawingImage is null )
+        if (this.drawingImage is null)
         {
             return;
         }
 
-        if ( this.drawingImage.Drawing is DrawingGroup drawingGroup)
+        if (this.drawingImage.Drawing is DrawingGroup drawingGroup)
         {
             this.ProcessDrawingGroup(drawingGroup);
             this.image.Source = this.drawingImage;
@@ -47,7 +49,7 @@ public partial class SvgIcon : UserControl
         if (geometryDrawing.Brush != null)
         {
             // Brush not null: we need to fill 
-            geometryDrawing.Brush = this.Foreground;
+            geometryDrawing.Brush = new SolidColorBrush(this.Foreground);
         }
 
         if (geometryDrawing.Pen is Pen pen)
@@ -55,13 +57,13 @@ public partial class SvgIcon : UserControl
             // If the pen is null, no stroke, no need to do anything 
             if (pen.Brush is SolidColorBrush)
             {
-                pen.Brush = this.Foreground;
+                pen.Brush = new SolidColorBrush(this.Foreground);
             }
             else if (pen.Brush is LinearGradientBrush lnearGradientBrush)
             {
                 foreach (var stop in lnearGradientBrush.GradientStops)
                 {
-                    stop.Color = this.Foreground.Color;
+                    stop.Color = this.Foreground;
                 }
             }
             else
@@ -69,20 +71,21 @@ public partial class SvgIcon : UserControl
                 if (pen.Brush is not null)
                 {
                     Debug.WriteLine("Unsupported pen brush: " + pen.Brush.GetType().Name);
-                } 
+                }
                 else
                 {
                     Debug.WriteLine("No brush ??? ");
                 }
 
-                if ( Debugger.IsAttached ) {  Debugger.Break(); }
+                if (Debugger.IsAttached) { Debugger.Break(); }
             }
 
             pen.Thickness = this.StrokeThickness;
         }
         else
         {
-            geometryDrawing.Pen = new Pen() { Thickness = this.StrokeThickness, Brush = this.Foreground };
+            geometryDrawing.Pen =
+                new Pen() { Thickness = this.StrokeThickness, Brush = new SolidColorBrush(this.Foreground) };
         }
     }
 
@@ -92,32 +95,40 @@ public partial class SvgIcon : UserControl
 
     /// <summary> Source Styled Property </summary>
     public static readonly StyledProperty<string> SourceProperty =
-        AvaloniaProperty.Register< SvgIcon , string>(
-            nameof(Source), 
-            defaultValue:string.Empty, 
-            inherits: false, 
-            defaultBindingMode:BindingMode.OneWay, 
-            validate: null, 
-            coerce: CoerceSource, 
+        AvaloniaProperty.Register<SvgIcon, string>(
+            nameof(Source),
+            defaultValue: string.Empty,
+            inherits: false,
+            defaultBindingMode: BindingMode.OneWay,
+            validate: null,
+            coerce: CoerceSource,
             enableDataValidation: false);
 
     /// <summary> Gets or sets the Source property.</summary>
     public string Source
     {
         get => this.GetValue(SourceProperty);
-        set => this.SetValue(SourceProperty, value);
+        set
+        {
+            this.SetValue(SourceProperty, value);
+            if (this.imageUpdateRequired)
+            {
+                this.UpdateImage();
+                this.imageUpdateRequired = false;
+            }
+        }
     }
 
     private static string CoerceSource(AvaloniaObject sender, string newSource)
     {
-        bool valid = !string.IsNullOrWhiteSpace(newSource) ;
-        if ( valid && (sender is SvgIcon svgIcon))
+        bool valid = !string.IsNullOrWhiteSpace(newSource);
+        if (valid && (sender is SvgIcon svgIcon))
         {
             string source = string.Concat("icon_", newSource, "DrawingImage");
             if (Utilities.TryFindResource<DrawingImage>(source, out svgIcon.drawingImage) ||
                 Utilities.TryFindResource<DrawingImage>(newSource, out svgIcon.drawingImage))
             {
-                svgIcon.UpdateImage();
+                svgIcon.imageUpdateRequired = true;
                 return newSource;
             }
         }
@@ -263,10 +274,10 @@ public partial class SvgIcon : UserControl
     #region Styled Property Foreground
 
     /// <summary> Foreground Styled Property </summary>
-    public static new readonly StyledProperty<SolidColorBrush> ForegroundProperty =
-        AvaloniaProperty.Register<SvgIcon, SolidColorBrush>(
+    public static new readonly StyledProperty<Color> ForegroundProperty =
+        AvaloniaProperty.Register<SvgIcon, Color>(
             nameof(Foreground),
-            defaultValue: new SolidColorBrush(Colors.Aquamarine, 1.0),
+            defaultValue: Colors.Aquamarine,
             inherits: false,
             defaultBindingMode: BindingMode.OneWay,
             validate: null,
@@ -274,19 +285,27 @@ public partial class SvgIcon : UserControl
             enableDataValidation: false);
 
     /// <summary> Gets or sets the Foreground property.</summary>
-    public new SolidColorBrush Foreground
+    public new Color Foreground
     {
         get => this.GetValue(ForegroundProperty);
-        set => this.SetValue(ForegroundProperty, value);
+
+        set
+        {
+            this.SetValue(ForegroundProperty, value);
+            if (this.imageUpdateRequired)
+            {
+                this.UpdateImage();
+                this.imageUpdateRequired = false;
+            }
+        }
     }
 
     /// <summary> Coerces the Foreground value. </summary>
-    private static SolidColorBrush CoerceForeground(AvaloniaObject sender, SolidColorBrush newForeground)
+    private static Color CoerceForeground(AvaloniaObject sender, Color newForeground)
     {
         if (sender is SvgIcon svgIcon)
         {
-            svgIcon.Foreground = newForeground;
-            svgIcon.UpdateImage();
+            svgIcon.imageUpdateRequired = true;
         }
 
         return newForeground;
@@ -311,17 +330,24 @@ public partial class SvgIcon : UserControl
     public double StrokeThickness
     {
         get => this.GetValue(StrokeThicknessProperty);
-        set => this.SetValue(StrokeThicknessProperty, value);
+        set
+        {
+            this.SetValue(StrokeThicknessProperty, value);
+            if (this.imageUpdateRequired)
+            {
+                this.UpdateImage();
+                this.imageUpdateRequired = false;
+            }
+        }
     }
 
     /// <summary> Coerces the StrokeThickness value. </summary>
-    private static double CoerceStrokeThickness(AvaloniaObject sender , double newStrokeThickness)
+    private static double CoerceStrokeThickness(AvaloniaObject sender, double newStrokeThickness)
     {
         if (sender is SvgIcon svgIcon)
         {
-            svgIcon.StrokeThickness = newStrokeThickness;
-            svgIcon.UpdateImage();
-        } 
+            svgIcon.imageUpdateRequired = true;
+        }
 
         return newStrokeThickness;
     }
