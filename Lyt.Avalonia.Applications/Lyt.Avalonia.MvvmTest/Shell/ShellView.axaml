@@ -5,8 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Lyt.Avalonia.MvvmTest.Shell"
-    xmlns:localCtrl="clr-namespace:Lyt.Avalonia.MvvmTest.Controls"
-    xmlns:ctrl="using:Lyt.Avalonia.Controls"
+	xmlns:controls="clr-namespace:Lyt.Avalonia.Controls;assembly=Lyt.Avalonia.Controls"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     x:DataType="vm:ShellViewModel" 
     Background="Transparent"
@@ -54,7 +53,7 @@
             Grid.Row="0"
             x:Name="WorkflowContent"
             />		
-        <ctrl:SvgIcon
+        <controls:SvgIcon
             Source="power_button"
             HorizontalAlignment="Right" VerticalAlignment="Top"
             Margin="12 64 12 12"
@@ -63,7 +62,7 @@
             StrokeThickness="1"
             Foreground="DarkOrchid"
             />
-		<ctrl:SvgIcon
+		<controls:SvgIcon
             Source="settings"
             HorizontalAlignment="Right" VerticalAlignment="Top"
             Margin="12"
