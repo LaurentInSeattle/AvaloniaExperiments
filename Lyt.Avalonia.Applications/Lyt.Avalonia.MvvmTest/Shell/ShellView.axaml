@@ -60,11 +60,8 @@
             Wadding="4"
             Height="32" Width="32"
             StrokeThickness="1"
-            >
-            <ctrl:SvgIcon.Foreground>
-                <Color>DarkOrchid</Color>
-            </ctrl:SvgIcon.Foreground>
-        </ctrl:SvgIcon>
+			Foreground="DarkOrchid"
+            />
         <ctrl:SvgIcon
             Source="settings"
             HorizontalAlignment="Right" VerticalAlignment="Top"
@@ -72,9 +69,8 @@
             Wadding="4"
             Height="32" Width="32"
             StrokeThickness="1"
-            >
-            <ctrl:SvgIcon.Foreground><Color>DarkOrchid</Color></ctrl:SvgIcon.Foreground>
-        </ctrl:SvgIcon>
+			Foreground="DarkOrchid"
+            />
         <TextBlock 
             Grid.Row="1"
             Text="{Binding TickCount}" 

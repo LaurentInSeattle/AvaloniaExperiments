@@ -46,25 +46,18 @@ public partial class SvgIcon : UserControl
 
     private void ProcessGeometryDrawing(GeometryDrawing geometryDrawing)
     {
-        if (geometryDrawing.Brush != null)
+        if (geometryDrawing.Brush is not null)
         {
             // Brush not null: we need to fill 
-            geometryDrawing.Brush = new SolidColorBrush ( this.Foreground);
+            geometryDrawing.Brush = this.Foreground;
         }
 
         if (geometryDrawing.Pen is Pen pen)
         {
             // If the pen is null, no stroke, no need to do anything 
-            if (pen.Brush is SolidColorBrush)
+            if ((pen.Brush is ImmutableSolidColorBrush) ||(pen.Brush is ImmutableLinearGradientBrush ))
             {
-                pen.Brush = new SolidColorBrush(this.Foreground);
-            }
-            else if (pen.Brush is LinearGradientBrush lnearGradientBrush)
-            {
-                foreach (var stop in lnearGradientBrush.GradientStops)
-                {
-                    stop.Color = this.Foreground;
-                }
+                pen.Brush = this.Foreground;
             }
             else
             {
@@ -84,8 +77,7 @@ public partial class SvgIcon : UserControl
         }
         else
         {
-            geometryDrawing.Pen = 
-                new Pen() { Thickness = this.StrokeThickness, Brush = new SolidColorBrush(this.Foreground) };
+            geometryDrawing.Pen = new Pen() { Thickness = this.StrokeThickness, Brush = this.Foreground };
         }
     }
 
@@ -241,8 +233,8 @@ public partial class SvgIcon : UserControl
     #region Styled Property Background
 
     /// <summary> Background Styled Property </summary>
-    public static new readonly StyledProperty<Brush> BackgroundProperty =
-        AvaloniaProperty.Register<SvgIcon, Brush>(
+    public static new readonly StyledProperty<IBrush> BackgroundProperty =
+        AvaloniaProperty.Register<SvgIcon, IBrush>(
             nameof(Background),
             defaultValue: new SolidColorBrush(Colors.Aquamarine, 1.0),
             inherits: false,
@@ -252,14 +244,14 @@ public partial class SvgIcon : UserControl
             enableDataValidation: false);
 
     /// <summary> Gets or sets the Background property.</summary>
-    public new Brush Background
+    public new IBrush Background
     {
         get => this.GetValue(BackgroundProperty);
         set => this.SetValue(BackgroundProperty, value);
     }
 
     /// <summary> Coerces the Background value. </summary>
-    private static Brush CoerceBackground(AvaloniaObject sender, Brush newBackground)
+    private static IBrush CoerceBackground(AvaloniaObject sender, IBrush newBackground)
     {
         if (sender is SvgIcon svgIcon)
         {
@@ -274,10 +266,10 @@ public partial class SvgIcon : UserControl
     #region Styled Property Foreground
 
     /// <summary> Foreground Styled Property </summary>
-    public static new readonly StyledProperty<Color> ForegroundProperty =
-        AvaloniaProperty.Register<SvgIcon, Color>(
+    public static new readonly StyledProperty<IBrush> ForegroundProperty =
+        AvaloniaProperty.Register<SvgIcon, IBrush>(
             nameof(Foreground),
-            defaultValue: Colors.Aquamarine,
+            defaultValue: Brushes.Aquamarine,
             inherits: false,
             defaultBindingMode: BindingMode.OneWay,
             validate: null,
@@ -285,7 +277,7 @@ public partial class SvgIcon : UserControl
             enableDataValidation: false);
 
     /// <summary> Gets or sets the Foreground property.</summary>
-    public new Color Foreground
+    public new IBrush Foreground
     {
         get => this.GetValue(ForegroundProperty);
         
@@ -301,7 +293,7 @@ public partial class SvgIcon : UserControl
     }
 
     /// <summary> Coerces the Foreground value. </summary>
-    private static Color CoerceForeground(AvaloniaObject sender, Color newForeground)
+    private static IBrush CoerceForeground(AvaloniaObject sender, IBrush newForeground)
     {
         if (sender is SvgIcon svgIcon)
         {
