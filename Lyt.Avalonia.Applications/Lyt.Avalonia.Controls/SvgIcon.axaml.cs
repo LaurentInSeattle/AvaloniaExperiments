@@ -3,6 +3,10 @@ namespace Lyt.Avalonia.Controls;
 public partial class SvgIcon : UserControl
 {
     // TODO 
+    // Support basic GeometryDrawing objects, see Avalonia.IconPacks on GitHub for samples.
+    // Should be able to generate and then use a DrawingImage from a GeometryDrawing 
+    // 
+    // TODO 
     // private const string DefaultSvgIcon = "DefaultSvgIcon";
 
     private bool imageUpdateRequired;

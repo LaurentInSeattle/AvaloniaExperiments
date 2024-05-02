@@ -54,22 +54,40 @@
             x:Name="WorkflowContent"
             />		
         <controls:SvgIcon
-            Source="power_button"
+            Source="icon_power_button"
             HorizontalAlignment="Right" VerticalAlignment="Top"
             Margin="12 64 12 12"
             Wadding="4"
             Height="32" Width="32"
             StrokeThickness="1"
+            Foreground="Orange"
+            />
+		<controls:SvgIcon
+            Source="icon_brightness"
+            HorizontalAlignment="Right" VerticalAlignment="Top"
+            Margin="12 12 62 12"
+            Wadding="4"
+            Height="46" Width="46"
+            StrokeThickness="1"
+            Foreground="Orchid"
+            />
+		<controls:SvgIcon
+            Source="icon_contrast"
+            HorizontalAlignment="Right" VerticalAlignment="Top"
+            Margin="12 64 64 12"
+            Wadding="4"
+            Height="42" Width="42"
+            StrokeThickness="1"
             Foreground="DarkOrchid"
             />
 		<controls:SvgIcon
-            Source="settings"
+            Source="icon_add_user"
             HorizontalAlignment="Right" VerticalAlignment="Top"
             Margin="12"
             Wadding="4"
             Height="32" Width="32"
             StrokeThickness="1"
-            Foreground="DarkOrchid"
+            Foreground="DarkOrange"
             />
         <TextBlock 
             Grid.Row="1"

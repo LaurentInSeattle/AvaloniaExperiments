@@ -6,7 +6,6 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 
-  
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
@@ -35,5 +34,5 @@
   <ItemGroup>
     <Folder Include="Controls\" />
   </ItemGroup>
-    
+
 </Project>
