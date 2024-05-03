@@ -1,4 +1,6 @@
-﻿namespace Lyt.Avalonia.MvvmTest;
+﻿using Lyt.Avalonia.Controls.Logging;
+
+namespace Lyt.Avalonia.MvvmTest;
 
 public partial class App : ApplicationBase
 {
@@ -28,7 +30,11 @@ public partial class App : ApplicationBase
         ],
         [
             // Services 
+#if DEBUG
+            new Tuple<Type, Type>(typeof(ILogger), typeof(LogViewerWindow)),
+#else
             new Tuple<Type, Type>(typeof(ILogger), typeof(Logger)),
+#endif
             new Tuple<Type, Type>(typeof(IMessenger), typeof(Messenger)),
         ],
         singleInstanceRequested: true)

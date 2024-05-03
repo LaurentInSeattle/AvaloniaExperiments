@@ -654,6 +654,174 @@
 </DrawingGroup>
 <DrawingImage x:Key="icon_info_exclamation" Drawing="{StaticResource icon_info_exclamationDrawingGroup}" />
 
+<!--  icon_instPod_clutch_1L  -->
+<DrawingGroup x:Key = "icon_instPod_clutch_1LDrawingGroup">
+<DrawingGroup>
+    <DrawingGroup.ClipGeometry>
+      <RectangleGeometry Rect="0,0,58,58" />
+    </DrawingGroup.ClipGeometry>
+    <DrawingGroup  >
+      <DrawingGroup  >
+        <GeometryDrawing  >
+          <GeometryDrawing.Brush>
+            <SolidColorBrush Color="#FF312183" Opacity="0.4" />
+          </GeometryDrawing.Brush>
+          <GeometryDrawing.Pen>
+            <Pen Brush="#FFBEB6F7" Thickness="1" LineCap="Flat" LineJoin="Miter" />
+          </GeometryDrawing.Pen>
+          <GeometryDrawing.Geometry>
+            <EllipseGeometry RadiusX="7.5" RadiusY="7.5" Center="8,50" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#FFBEB6F7"  >
+          <GeometryDrawing.Geometry>
+            <PathGeometry FillRule="NonZero" Figures="M10.8138,53.0303L10.8138,54 6,54 6,46 7.1198,46 7.1198,53.0303 10.8138,53.0303z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+      <DrawingGroup  >
+        <GeometryDrawing Brush="#FFBEB6F7"  >
+          <GeometryDrawing.Geometry>
+            <PathGeometry FillRule="EvenOdd" Figures="M38,39C48.4934,39 57,30.4934 57,20 57,9.5066 48.4934,1 38,1 27.5066,1 19,9.5066 19,20 19,30.4934 27.5066,39 38,39z M38,40C49.0457,40 58,31.0457 58,20 58,8.9543 49.0457,0 38,0 26.9543,0 18,8.9543 18,20 18,31.0457 26.9543,40 38,40z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#FFBEB6F7"  >
+          <GeometryDrawing.Geometry>
+            <PathGeometry FillRule="NonZero" Figures="M32,12.7007C33.3241,12.2372 34.5048,11.6524 35.5421,10.9462 36.5793,10.2179 37.6055,9.2359 38.6207,8L40.1434,8 40.1434,30.9407 37.9917,30.9407 37.9917,11.2772C37.749,11.5421 37.429,11.8179 37.0317,12.1048 36.6566,12.3917 36.2262,12.6786 35.7407,12.9655 35.2552,13.2303 34.7476,13.4952 34.2179,13.76 33.6883,14.0028 33.1586,14.2014 32.629,14.3559L32,12.7007z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingGroup>
+  </DrawingGroup>
+</DrawingGroup>
+<DrawingImage x:Key="icon_instPod_clutch_1L" Drawing="{StaticResource icon_instPod_clutch_1LDrawingGroup}" />
+
+<!--  icon_instPod_clutch_2R  -->
+<DrawingGroup x:Key = "icon_instPod_clutch_2RDrawingGroup">
+<DrawingGroup>
+    <DrawingGroup.ClipGeometry>
+      <RectangleGeometry Rect="0,0,58,58" />
+    </DrawingGroup.ClipGeometry>
+    <DrawingGroup  >
+      <DrawingGroup  >
+        <GeometryDrawing Brush="#FFBEB6F7"  >
+          <GeometryDrawing.Geometry>
+            <PathGeometry FillRule="EvenOdd" Figures="M20,39C30.4934,39 39,30.4934 39,20 39,9.5066 30.4934,1 20,1 9.5066,1 1,9.5066 1,20 1,30.4934 9.5066,39 20,39z M20,40C31.0457,40 40,31.0457 40,20 40,8.9543 31.0457,0 20,0 8.9543,0 0,8.9543 0,20 0,31.0457 8.9543,40 20,40z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#FFBEB6F7"  >
+          <GeometryDrawing.Geometry>
+            <PathGeometry FillRule="NonZero" Figures="M26.065,14.4772C26.065,15.3379 25.9105,16.1544 25.6016,16.9269 25.2926,17.6772 24.8733,18.4055 24.3436,19.1117 23.836,19.8179 23.2512,20.502 22.5891,21.1641 21.9271,21.8262 21.254,22.4882 20.5698,23.1503 19.996,23.702 19.4333,24.2648 18.8816,24.8386 18.3519,25.3903 17.8664,25.9531 17.425,26.5269 17.0057,27.0786 16.6636,27.6303 16.3988,28.182 16.156,28.7117 16.0347,29.2413 16.0347,29.771L16.0347,29.8372 26.8595,29.8372 26.8595,31.7241 13.6512,31.7241C13.6512,31.68 13.6402,31.6027 13.6181,31.4924 13.6181,31.36 13.6181,31.1724 13.6181,30.9296 13.6181,29.8924 13.8057,28.9324 14.1809,28.0496 14.556,27.1448 15.0305,26.2951 15.6043,25.5007 16.2002,24.7062 16.8512,23.9669 17.5574,23.2827 18.2857,22.5986 18.9809,21.9365 19.6429,21.2965 20.1947,20.7669 20.7133,20.2593 21.1988,19.7738 21.7064,19.2662 22.1478,18.7476 22.5229,18.2179 22.8981,17.6882 23.196,17.1255 23.4167,16.5296 23.6374,15.9338 23.7478,15.2827 23.7478,14.5765 23.7478,13.0317 23.3285,11.9282 22.4898,11.2662 21.6733,10.582 20.636,10.24 19.3781,10.24 18.6719,10.24 18.0429,10.3282 17.4912,10.5048 16.9395,10.6814 16.454,10.891 16.0347,11.1338 15.6374,11.3545 15.2954,11.5862 15.0085,11.8289 14.7216,12.0717 14.5119,12.2593 14.3795,12.3917L13.254,10.902C13.3864,10.7476 13.6181,10.5269 13.9491,10.24 14.3022,9.931 14.7326,9.6331 15.2402,9.3462 15.7698,9.0593 16.3767,8.8165 17.0609,8.6179 17.745,8.3972 18.5064,8.2869 19.345,8.2869 21.574,8.2869 23.2512,8.8386 24.3767,9.942 25.5022,11.0234 26.065,12.5351 26.065,14.4772z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+      <DrawingGroup  >
+        <GeometryDrawing  >
+          <GeometryDrawing.Brush>
+            <SolidColorBrush Color="#FF312183" Opacity="0.4" />
+          </GeometryDrawing.Brush>
+          <GeometryDrawing.Pen>
+            <Pen Brush="#FFBEB6F7" Thickness="1" LineCap="Flat" LineJoin="Miter" />
+          </GeometryDrawing.Pen>
+          <GeometryDrawing.Geometry>
+            <EllipseGeometry RadiusX="7.5" RadiusY="7.5" Center="50,50" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#FFBEB6F7"  >
+          <GeometryDrawing.Geometry>
+            <PathGeometry FillRule="NonZero" Figures="M51.3743,50.6857C51.4962,50.8381 51.6486,51.04 51.8314,51.2914 52.0219,51.5352 52.2162,51.8095 52.4143,52.1143 52.6124,52.4114 52.8067,52.7238 52.9971,53.0514 53.1952,53.3791 53.3629,53.6952 53.5,54L52.2886,54C52.1362,53.7105 51.9686,53.4171 51.7857,53.12 51.6105,52.8229 51.4314,52.541 51.2486,52.2743 51.0657,52 50.8829,51.7448 50.7,51.5086 50.5248,51.2724 50.3648,51.0667 50.22,50.8914 50.1209,50.899 50.0181,50.9029 49.9114,50.9029 49.8124,50.9029 49.7095,50.9029 49.6029,50.9029L48.6086,50.9029 48.6086,54 47.5,54 47.5,46.1943C47.8124,46.1181 48.159,46.0686 48.54,46.0457 48.9286,46.0152 49.2829,46 49.6029,46 50.7152,46 51.5609,46.2095 52.14,46.6286 52.7267,47.0476 53.02,47.6724 53.02,48.5029 53.02,49.0286 52.879,49.4781 52.5971,49.8514 52.3229,50.2248 51.9152,50.5029 51.3743,50.6857z M49.6943,46.9714C49.2219,46.9714,48.86,46.9829,48.6086,47.0057L48.6086,49.9886 49.3971,49.9886C49.7781,49.9886 50.1209,49.9695 50.4257,49.9314 50.7305,49.8933 50.9857,49.8209 51.1914,49.7143 51.4048,49.6076 51.5686,49.459 51.6829,49.2686 51.7971,49.0705 51.8543,48.8114 51.8543,48.4914 51.8543,48.1943 51.7971,47.9467 51.6829,47.7486 51.5686,47.5505 51.4124,47.3943 51.2143,47.28 51.0238,47.1657 50.7952,47.0857 50.5286,47.04 50.2695,46.9943 49.9914,46.9714 49.6943,46.9714z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingGroup>
+  </DrawingGroup>
+</DrawingGroup>
+<DrawingImage x:Key="icon_instPod_clutch_2R" Drawing="{StaticResource icon_instPod_clutch_2RDrawingGroup}" />
+
+<!--  icon_instPod_default_1L  -->
+<DrawingGroup x:Key = "icon_instPod_default_1LDrawingGroup">
+<DrawingGroup>
+    <DrawingGroup.ClipGeometry>
+      <RectangleGeometry Rect="0,0,58,58" />
+    </DrawingGroup.ClipGeometry>
+    <DrawingGroup  >
+      <DrawingGroup  >
+        <GeometryDrawing Brush="#FFBEB6F7"  >
+          <GeometryDrawing.Geometry>
+            <PathGeometry FillRule="NonZero" Figures="M57,29C57,44.464 44.464,57 29,57 24.9203,57 21.0444,56.1275 17.5488,54.5589 17.3165,54.826 17.0702,55.0807 16.8112,55.3218 20.5168,57.0406 24.6464,58 29,58 45.0163,58 58,45.0163 58,29 58,12.9837 45.0163,0 29,0 12.9837,0 0,12.9837 0,29 0,33.3536 0.9594,37.4832 2.6782,41.1888 2.9193,40.9298 3.174,40.6835 3.4411,40.4512 1.8725,36.9556 1,33.0797 1,29 1,13.536 13.536,1 29,1 44.464,1 57,13.536 57,29z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#FFBEB6F7"  >
+          <GeometryDrawing.Geometry>
+            <PathGeometry FillRule="NonZero" Figures="M20.0425,19.5518C21.9625,18.8798 23.6745,18.0318 25.1785,17.0078 26.6825,15.9518 28.1705,14.5278 29.6425,12.7358L31.8505,12.7358 31.8505,45.9998 28.7305,45.9998 28.7305,17.4878C28.3785,17.8718 27.9145,18.2718 27.3385,18.6878 26.7945,19.1038 26.1705,19.5198 25.4665,19.9358 24.7625,20.3198 24.0265,20.7038 23.2585,21.0878 22.4905,21.4398 21.7225,21.7278 20.9545,21.9518L20.0425,19.5518z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+      <DrawingGroup  >
+        <GeometryDrawing  >
+          <GeometryDrawing.Brush>
+            <SolidColorBrush Color="#FF312183" Opacity="0.4" />
+          </GeometryDrawing.Brush>
+          <GeometryDrawing.Pen>
+            <Pen Brush="#FFBEB6F7" Thickness="1" LineCap="Flat" LineJoin="Miter" />
+          </GeometryDrawing.Pen>
+          <GeometryDrawing.Geometry>
+            <EllipseGeometry RadiusX="9.5" RadiusY="9.5" Center="10,48" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#FFBEB6F7"  >
+          <GeometryDrawing.Geometry>
+            <PathGeometry FillRule="NonZero" Figures="M13.5173,51.7879L13.5173,53 7.5,53 7.5,43 8.8997,43 8.8997,51.7879 13.5173,51.7879z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingGroup>
+  </DrawingGroup>
+</DrawingGroup>
+<DrawingImage x:Key="icon_instPod_default_1L" Drawing="{StaticResource icon_instPod_default_1LDrawingGroup}" />
+
+<!--  icon_instPod_default_2R  -->
+<DrawingGroup x:Key = "icon_instPod_default_2RDrawingGroup">
+<DrawingGroup>
+    <DrawingGroup.ClipGeometry>
+      <RectangleGeometry Rect="0,0,58,58" />
+    </DrawingGroup.ClipGeometry>
+    <DrawingGroup  >
+      <DrawingGroup  >
+        <GeometryDrawing Brush="#FFBEB6F7"  >
+          <GeometryDrawing.Geometry>
+            <PathGeometry FillRule="NonZero" Figures="M40.4512,54.5589C36.9556,56.1275 33.0797,57 29,57 13.536,57 1,44.464 1,29 1,13.536 13.536,1 29,1 44.464,1 57,13.536 57,29 57,33.0797 56.1275,36.9556 54.5589,40.4512 54.826,40.6835 55.0807,40.9298 55.3218,41.1888 57.0406,37.4832 58,33.3536 58,29 58,12.9837 45.0163,0 29,0 12.9837,0 0,12.9837 0,29 0,45.0163 12.9837,58 29,58 33.3536,58 37.4832,57.0406 41.1888,55.3218 40.9298,55.0807 40.6835,54.826 40.4512,54.5589z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#FFBEB6F7"  >
+          <GeometryDrawing.Geometry>
+            <PathGeometry FillRule="NonZero" Figures="M37.7943,20.992C37.7943,22.24 37.5703,23.424 37.1223,24.544 36.6743,25.632 36.0663,26.688 35.2983,27.712 34.5623,28.736 33.7143,29.728 32.7543,30.688 31.7943,31.648 30.8183,32.608 29.8263,33.568 28.9943,34.368 28.1783,35.184 27.3783,36.016 26.6103,36.816 25.9063,37.632 25.2663,38.464 24.6583,39.264 24.1623,40.064 23.7783,40.864 23.4263,41.632 23.2503,42.4 23.2503,43.168L23.2503,43.264 38.9463,43.264 38.9463,46 19.7943,46C19.7943,45.936 19.7783,45.824 19.7463,45.664 19.7463,45.472 19.7463,45.2 19.7463,44.848 19.7463,43.344 20.0183,41.952 20.5623,40.672 21.1063,39.36 21.7943,38.128 22.6263,36.976 23.4903,35.824 24.4343,34.752 25.4583,33.76 26.5143,32.768 27.5223,31.808 28.4823,30.88 29.2823,30.112 30.0343,29.376 30.7383,28.672 31.4743,27.936 32.1143,27.184 32.6583,26.416 33.2023,25.648 33.6343,24.832 33.9543,23.968 34.2743,23.104 34.4343,22.16 34.4343,21.136 34.4343,18.896 33.8263,17.296 32.6103,16.336 31.4263,15.344 29.9223,14.848 28.0983,14.848 27.0743,14.848 26.1623,14.976 25.3623,15.232 24.5623,15.488 23.8583,15.792 23.2503,16.144 22.6743,16.464 22.1783,16.8 21.7623,17.152 21.3463,17.504 21.0423,17.776 20.8503,17.968L19.2183,15.808C19.4103,15.584 19.7463,15.264 20.2263,14.848 20.7383,14.4 21.3623,13.968 22.0983,13.552 22.8663,13.136 23.7463,12.784 24.7383,12.496 25.7303,12.176 26.8343,12.016 28.0503,12.016 31.2823,12.016 33.7143,12.816 35.3463,14.416 36.9783,15.984 37.7943,18.176 37.7943,20.992z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+      <DrawingGroup  >
+        <GeometryDrawing  >
+          <GeometryDrawing.Brush>
+            <SolidColorBrush Color="#FF312183" Opacity="0.4" />
+          </GeometryDrawing.Brush>
+          <GeometryDrawing.Pen>
+            <Pen Brush="#FFBEB6F7" Thickness="1" LineCap="Flat" LineJoin="Miter" />
+          </GeometryDrawing.Pen>
+          <GeometryDrawing.Geometry>
+            <EllipseGeometry RadiusX="9.5" RadiusY="9.5" Center="48,48" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+        <GeometryDrawing Brush="#FFBEB6F7"  >
+          <GeometryDrawing.Geometry>
+            <PathGeometry FillRule="NonZero" Figures="M49.7179,48.8571C49.8702,49.0476 50.0607,49.3 50.2893,49.6143 50.5274,49.9191 50.7702,50.2619 51.0179,50.6429 51.2655,51.0143 51.5083,51.4048 51.7464,51.8143 51.9941,52.2238 52.2036,52.6191 52.375,53L50.8607,53C50.6702,52.6381 50.4607,52.2714 50.2321,51.9 50.0131,51.5286 49.7893,51.1762 49.5607,50.8429 49.3321,50.5 49.1036,50.1809 48.875,49.8857 48.656,49.5905 48.456,49.3333 48.275,49.1143 48.1512,49.1238 48.0226,49.1286 47.8893,49.1286 47.7655,49.1286 47.6369,49.1286 47.5036,49.1286L46.2607,49.1286 46.2607,53 44.875,53 44.875,43.2429C45.2655,43.1476 45.6988,43.0857 46.175,43.0571 46.6607,43.019 47.1036,43 47.5036,43 48.8941,43 49.9512,43.2619 50.675,43.7857 51.4083,44.3095 51.775,45.0905 51.775,46.1286 51.775,46.7857 51.5988,47.3476 51.2464,47.8143 50.9036,48.281 50.3941,48.6286 49.7179,48.8571z M47.6179,44.2143C47.0274,44.2143,46.575,44.2286,46.2607,44.2571L46.2607,47.9857 47.2464,47.9857C47.7226,47.9857 48.1512,47.9619 48.5321,47.9143 48.9131,47.8667 49.2321,47.7762 49.4893,47.6429 49.756,47.5095 49.9607,47.3238 50.1036,47.0857 50.2464,46.8381 50.3179,46.5143 50.3179,46.1143 50.3179,45.7429 50.2464,45.4333 50.1036,45.1857 49.9607,44.9381 49.7655,44.7429 49.5179,44.6 49.2798,44.4571 48.9941,44.3571 48.6607,44.3 48.3369,44.2429 47.9893,44.2143 47.6179,44.2143z" />
+          </GeometryDrawing.Geometry>
+        </GeometryDrawing>
+      </DrawingGroup>
+    </DrawingGroup>
+  </DrawingGroup>
+</DrawingGroup>
+<DrawingImage x:Key="icon_instPod_default_2R" Drawing="{StaticResource icon_instPod_default_2RDrawingGroup}" />
+
 <!--  icon_insufflation  -->
 <DrawingGroup x:Key = "icon_insufflationDrawingGroup">
 <DrawingGroup>

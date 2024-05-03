@@ -18,4 +18,10 @@
     <ProjectReference Include="..\Lyt.Avalonia.Themes\Lyt.Avalonia.Themes.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Logging\LogViewerWindow.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

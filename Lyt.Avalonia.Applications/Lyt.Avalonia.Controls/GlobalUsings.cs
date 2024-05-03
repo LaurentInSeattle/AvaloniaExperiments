@@ -2,6 +2,7 @@
 global using System.Collections;
 global using System.Collections.Concurrent;
 global using System.Collections.Generic;
+global using System.Collections.ObjectModel;
 global using System.ComponentModel;
 global using System.Diagnostics;
 global using System.Linq;
@@ -16,8 +17,12 @@ global using Avalonia.Controls;
 global using Avalonia.Controls.ApplicationLifetimes;
 global using Avalonia.Data;
 global using Avalonia.Data.Core.Plugins;
+global using Avalonia.Interactivity;
 global using Avalonia.Markup.Xaml;
 global using Avalonia.Media;
 global using Avalonia.Media.Immutable;
 global using Avalonia.Styling;
 global using Avalonia.Threading;
+
+global using Lyt.Avalonia.Interfaces;
+

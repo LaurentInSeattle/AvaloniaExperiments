@@ -44,7 +44,7 @@ public class ApplicationBase(
     private readonly bool singleInstanceRequested = singleInstanceRequested;
 
     private IClassicDesktopStyleApplicationLifetime? desktop ;
-
+    
     public override async void OnFrameworkInitializationCompleted()
     {
         if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
@@ -139,7 +139,6 @@ public class ApplicationBase(
                         _ = services.AddSingleton(interfaceType, implementationType);
                     }
 
-                    //_ = services.AddSingleton<ILogger, NoahLogger>();
                 }).Build();
     }
 
@@ -185,20 +184,14 @@ public class ApplicationBase(
         var logger = ApplicationBase.GetRequiredService<ILogger>();
         this.Logger = logger;
 
-        //if (logger is .... )
-        //{
-        //    noahLogger.ApplicationName = this.applicationKey;
-        //    if (Debugger.IsAttached)
-        //    {
-        //        try
-        //        {
-        //            this.logViewer = new LogViewer();
-        //            this.logViewer.Show();
-        //            noahLogger.AttachCustomLogger(this.logViewer!);
-        //        }
-        //        catch (Exception) { /* swallow */ }
-        //    }
-        //}
+        if (Debugger.IsAttached && this.Logger is LogViewerWindow logViewer)
+        {
+            try
+            {
+                logViewer.Show();
+            }
+            catch (Exception) { /* swallow */ }
+        }
 
         this.Logger.Info("***   Startup   ***");
 

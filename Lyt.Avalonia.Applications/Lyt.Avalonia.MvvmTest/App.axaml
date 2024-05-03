@@ -12,7 +12,6 @@
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceInclude Source="/Assets/Vectors/Icons.axaml"/>
 				<ResourceInclude Source="/Assets/Vectors/SvgResourceDictionary.axaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>

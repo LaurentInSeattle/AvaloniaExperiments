@@ -19,6 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
+    <ProjectReference Include="..\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="SvgIcon.axaml.cs">
       <DependentUpon>SvgIcon.axaml</DependentUpon>
     </Compile>

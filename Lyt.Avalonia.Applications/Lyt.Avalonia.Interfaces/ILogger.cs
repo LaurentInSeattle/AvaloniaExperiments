@@ -1,5 +1,13 @@
 ﻿namespace Lyt.Avalonia.Interfaces;
 
+public enum LogLevel
+{
+    Debug,
+    Info,
+    Warning,
+    Error,
+}
+
 public interface ILogger
 {
     void Debug(string message);
