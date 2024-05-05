@@ -34,6 +34,7 @@ global using Lyt.Avalonia.Mvvm.Models;
 global using Lyt.Avalonia.Mvvm.Utilities;
 
 global using Lyt.Avalonia.Controls;
+global using Lyt.Avalonia.Controls.BadgeControl;
 global using Lyt.Avalonia.Orchestrator;
 global using Lyt.Avalonia.Persistence;
 global using Lyt.Avalonia.StateMachine;
