@@ -7,20 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <AvaloniaXaml Remove="ControlsIndex.axaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaResource Include="ControlsIndex.axaml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Lyt.Avalonia.Interfaces\Lyt.Avalonia.Interfaces.csproj" />
-    <ProjectReference Include="..\Lyt.Avalonia.Mvvm\Lyt.Avalonia.Mvvm.csproj" />
   </ItemGroup>
 
   <ItemGroup>

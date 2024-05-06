@@ -1,12 +1,10 @@
-using Avalonia.Controls.Primitives;
-
 namespace Lyt.Avalonia.Controls.BadgeControl;
 
-public partial class Badge : UserControl
+public partial class BadgeUserControl : UserControl
 {
-    ContentControl? contentControl; 
+    private ContentControl? contentControl; 
     
-    public Badge() 
+    public BadgeUserControl() 
     {
         this.InitializeComponent();
         this.ApplyTemplate();

@@ -6,7 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Lyt.Avalonia.MvvmTest.Shell"
 	xmlns:controls="clr-namespace:Lyt.Avalonia.Controls;assembly=Lyt.Avalonia.Controls"
-	xmlns:badge="clr-namespace:Lyt.Avalonia.Controls.BadgeControl;assembly=Lyt.Avalonia.Controls"
+	xmlns:badgeControl="clr-namespace:Lyt.Avalonia.Controls.BadgeControl;assembly=Lyt.Avalonia.Controls"
+	xmlns:badge="clr-namespace:Lyt.Avalonia.Controls.Badge;assembly=Lyt.Avalonia.Controls"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     x:DataType="vm:ShellViewModel" 
     Background="Transparent"
@@ -54,19 +55,27 @@
             Grid.Row="0"
             x:Name="WorkflowContent"
             />
+		<badgeControl:BadgeUserControl
+			Margin="24"
+            Height="80" Width="180"
+            HorizontalAlignment="Left" VerticalAlignment="Top"
+			>
+			<Rectangle 
+				RadiusX="10" RadiusY="10"
+				Fill="DarkOrange" Opacity="0.5"
+				/>
+		</badgeControl:BadgeUserControl>
 		<badge:Badge
 			Margin="24"
             Height="80" Width="180"
             HorizontalAlignment="Left" VerticalAlignment="Top"
 			>
-			<badge:Badge.Content>				
-			    <Rectangle 
-				    RadiusX="10" RadiusY="10"
-				    Fill="DarkOrange" Opacity="0.5"
-				    />
-			</badge:Badge.Content>
+			<Rectangle
+				RadiusX="10" RadiusY="10"
+				Fill="DarkOrange" Opacity="0.5"
+				/>
 		</badge:Badge>
-        <controls:SvgIcon
+		<controls:SvgIcon
             Source="icon_power_button"
             HorizontalAlignment="Right" VerticalAlignment="Top"
             Margin="12 64 12 12"
