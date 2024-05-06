@@ -65,15 +65,8 @@
 				Fill="DarkOrange" Opacity="0.5"
 				/>
 		</badgeControl:BadgeUserControl>
-		<badge:Badge
-			Margin="24"
-            Height="80" Width="180"
-            HorizontalAlignment="Left" VerticalAlignment="Top"
-			>
-			<Rectangle
-				RadiusX="10" RadiusY="10"
-				Fill="DarkOrange" Opacity="0.5"
-				/>
+		<badge:Badge BadgePosition="Top" BadgeContent="9+">
+			<Button Content="Messages"/>
 		</badge:Badge>
 		<controls:SvgIcon
             Source="icon_power_button"
@@ -137,5 +130,6 @@
             FontSize ="20" 
             Margin =" 12" 
             />
-    </Grid>
+    
+</Grid>
 </UserControl>

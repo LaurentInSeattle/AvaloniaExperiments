@@ -1,8 +1,9 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:badge="using:Lyt.Avalonia.Controls/Badge" 
-		>
-	<Style Selector="badge:Badge">
+﻿<Styles 
+	xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:badge="using:Lyt.Avalonia.Controls.Badge"
+	>
+	<Style Selector="badge|Badge">
 		<Setter Property="HorizontalAlignment" Value="Center"/>
 		<Setter Property="BadgeContentTemplate">
 			<DataTemplate>
@@ -12,7 +13,7 @@
 							 StrokeThickness="2.0"
 							 Width="20"
 							 Height="20"/>
-					<TextBlock Text="{Binding $parent[Badge].BadgeContent}"
+					<TextBlock Text="{Binding $parent[badge|Badge].BadgeContent}"
 							   FontSize="14"
 							   VerticalAlignment="Center"
 							   HorizontalAlignment="Center"/>
@@ -28,9 +29,9 @@
 					<ContentPresenter Name="PART_BadgePresenter"
 									  Content="{TemplateBinding BadgeContent}"
 									  ContentTemplate="{TemplateBinding BadgeContentTemplate}"
-									  VerticalAlignment="{Binding $parent[Badge].BadgeVerticalAlignment}"
-									  HorizontalAlignment="{Binding $parent[Badge].BadgeHorizontalAlignment}"
-									  Margin="{Binding $parent[Badge].BadgeThickness}"/>
+									  VerticalAlignment="{Binding $parent[badge|Badge].BadgeVerticalAlignment}"
+									  HorizontalAlignment="{Binding $parent[badge|Badge].BadgeHorizontalAlignment}"
+									  Margin="{Binding $parent[badge|Badge].BadgeThickness}"/>
 				</Grid>
 			</ControlTemplate>
 		</Setter>

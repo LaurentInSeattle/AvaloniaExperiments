@@ -11,6 +11,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <AvaloniaXaml Remove="App.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="App.axaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.10" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.10" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.10" />

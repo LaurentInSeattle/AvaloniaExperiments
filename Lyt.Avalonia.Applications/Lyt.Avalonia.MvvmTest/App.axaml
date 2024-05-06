@@ -2,12 +2,13 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     x:Class="Lyt.Avalonia.MvvmTest.App"
-    RequestedThemeVariant="Default">
+    RequestedThemeVariant="Default"
+	>
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.Styles>
         <FluentTheme />
-		<StyleInclude Source="avares://Lyt.Avalonia.Controls/Styles.axaml"/>
+		<StyleInclude Source="avares://Lyt.Avalonia.Controls.Theme/Styles.axaml"/>
 	</Application.Styles>
 
 	<Application.Resources>
