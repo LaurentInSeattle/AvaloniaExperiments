@@ -25,6 +25,11 @@ public sealed class ShellViewModel : Bindable<ShellView>
         {
             this.timingModel.Start();
         }
+
+        // Not good 
+        // This can only be caught in the main top level try catch 
+        //
+        // throw new NotImplementedException("wtf");
     }
 
     protected override async void OnViewLoaded()

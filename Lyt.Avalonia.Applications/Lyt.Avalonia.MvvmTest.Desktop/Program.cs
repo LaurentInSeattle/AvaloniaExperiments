@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Diagnostics;
 using Avalonia;
 
 namespace Lyt.Avalonia.MvvmTest.Desktop;
@@ -10,7 +10,19 @@ class Program
     // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
     // yet and stuff might break.
     [STAThread]
-    public static void Main(string[] args) => BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+    public static void Main(string[] args)
+    {
+        try
+        {
+            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        } 
+        catch (Exception ex)
+        {
+            // Not good, but that's we have for now 
+            if (Debugger.IsAttached) { Debugger.Break(); }
+            Console.WriteLine(ex.ToString());
+        }
+    } 
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()

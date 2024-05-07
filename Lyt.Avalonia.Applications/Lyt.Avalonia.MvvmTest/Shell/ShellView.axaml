@@ -65,9 +65,11 @@
 				Fill="DarkOrange" Opacity="0.5"
 				/>
 		</badgeControl:BadgeUserControl>
+		<!--
 		<badge:Badge BadgePosition="Top" BadgeContent="9+">
 			<Button Content="Messages" Width="120" Height="60" Margin="100 80 0 100" />
 		</badge:Badge>
+		-->
 		<controls:SvgIcon
             Source="icon_power_button"
             HorizontalAlignment="Right" VerticalAlignment="Top"

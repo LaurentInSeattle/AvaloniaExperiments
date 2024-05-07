@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Runtime.InteropServices;
 
 namespace Lyt.Avalonia.Mvvm;
@@ -43,10 +44,14 @@ public class ApplicationBase(
     private readonly List<Type> validatedModelTypes = [];
     private readonly bool singleInstanceRequested = singleInstanceRequested;
 
-    private IClassicDesktopStyleApplicationLifetime? desktop ;
-    
+    private IClassicDesktopStyleApplicationLifetime? desktop;
+
     public override async void OnFrameworkInitializationCompleted()
     {
+        // Try to catch all exceptions, missing the ones on the main thread at this time 
+        TaskScheduler.UnobservedTaskException += this.OnTaskSchedulerUnobservedTaskException;
+        AppDomain.CurrentDomain.UnhandledException += this.OnCurrentDomainUnhandledException;
+
         if (this.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime lifetime)
         {
             this.desktop = lifetime;
@@ -77,14 +82,14 @@ public class ApplicationBase(
             if (startupWindow is Window window)
             {
                 this.desktop.MainWindow = window;
-                this.StyleManager = new StyleManager(window); 
+                this.StyleManager = new StyleManager(window);
             }
             else
             {
                 throw new NotImplementedException("Failed to create MainWindow");
             }
         }
-        else 
+        else
         {
             // Should not be in designer mode
             throw new NotImplementedException("Unsupported Application Lifetime");
@@ -92,6 +97,18 @@ public class ApplicationBase(
 
         base.OnFrameworkInitializationCompleted();
         await this.Startup();
+    }
+
+    private void OnCurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        var exception = e.ExceptionObject as Exception;
+        this.GlobalExceptionHandler(exception);
+    }
+
+    private void OnTaskSchedulerUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+    {
+        var exception = e.Exception;
+        this.GlobalExceptionHandler(exception);
     }
 
     private void InitializeHosting()
@@ -147,7 +164,7 @@ public class ApplicationBase(
 
     public static TModel GetModel<TModel>() where TModel : notnull
     {
-        TModel? model = ApplicationBase.GetRequiredService<TModel>() ?? 
+        TModel? model = ApplicationBase.GetRequiredService<TModel>() ??
             throw new ApplicationException("No model of type " + typeof(TModel).FullName);
         bool isModel = typeof(IModel).IsAssignableFrom(typeof(TModel));
         if (!isModel)
@@ -174,9 +191,9 @@ public class ApplicationBase(
         return models;
     }
 
-    protected virtual Task OnStartup () => Task.CompletedTask;
+    protected virtual Task OnStartup() => Task.CompletedTask;
 
-    protected virtual Task OnShutdown () => Task.CompletedTask;
+    protected virtual Task OnShutdown() => Task.CompletedTask;
 
     private async Task Startup()
     {
@@ -228,13 +245,13 @@ public class ApplicationBase(
         this.ForceShutdown();
     }
 
-    private void ForceShutdown ()
+    private void ForceShutdown()
     {
         if (this.desktop is not null)
         {
             this.desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             this.desktop.Shutdown();
-        } 
+        }
     }
 
     private bool IsAlreadyRunning()
@@ -256,7 +273,7 @@ public class ApplicationBase(
                     Directory.CreateDirectory(directory);
                 }
 
-                string filePath = Path.Combine(directory, string.Concat (this.applicationKey, ".lock"));
+                string filePath = Path.Combine(directory, string.Concat(this.applicationKey, ".lock"));
                 ApplicationBase.LockFile = File.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
                 if (ApplicationBase.LockFile is not null)
                 {
@@ -268,5 +285,18 @@ public class ApplicationBase(
 
             return true;
         }
+    }
+
+    private void GlobalExceptionHandler(Exception? exception)
+    {
+        if (Debugger.IsAttached) { Debugger.Break(); }
+
+        if ((this.Logger is not null)  && ( exception is not null))
+        {
+            this.Logger.Error(exception.ToString());
+        }
+
+        // ??? 
+        // What can we do here ? 
     }
 }
