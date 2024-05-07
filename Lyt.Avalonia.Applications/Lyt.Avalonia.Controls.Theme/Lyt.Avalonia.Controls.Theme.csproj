@@ -7,11 +7,16 @@
   </PropertyGroup>
 	
 	<ItemGroup>
-		<AvaloniaResource Include="Styles\**" />		
+		<AvaloniaResource Include="Styles\**" />
 	</ItemGroup>
-		
+	
+	<ItemGroup>
+	  <AvaloniaResource Remove="Controls\Badge.axaml" />
+	</ItemGroup>
+			
   <ItemGroup>
 	  <PackageReference Include="Avalonia" Version="11.0.10" />
+	  <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.0.10" />
 	  <ProjectReference Include="..\Lyt.Avalonia.Controls\Lyt.Avalonia.Controls.csproj" />
   </ItemGroup>
 

@@ -145,13 +145,14 @@ public class ApplicationBase(
     public static T GetRequiredService<T>() where T : notnull
         => ApplicationBase.AppHost!.Services.GetRequiredService<T>();
 
-    public static T GetModel<T>() where T : notnull
+    public static TModel GetModel<TModel>() where TModel : notnull
     {
-        T? model = ApplicationBase.GetRequiredService<T>() ?? throw new ApplicationException("No model of type " + typeof(T).FullName);
-        bool isModel = typeof(IModel).IsAssignableFrom(typeof(T));
+        TModel? model = ApplicationBase.GetRequiredService<TModel>() ?? 
+            throw new ApplicationException("No model of type " + typeof(TModel).FullName);
+        bool isModel = typeof(IModel).IsAssignableFrom(typeof(TModel));
         if (!isModel)
         {
-            throw new ApplicationException(typeof(T).FullName + "  is not a IMOdel");
+            throw new ApplicationException(typeof(TModel).FullName + "  is not a IMOdel");
         }
 
         return model;

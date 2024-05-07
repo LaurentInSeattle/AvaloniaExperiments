@@ -8,7 +8,7 @@
 
     <Application.Styles>
         <FluentTheme />
-		<StyleInclude Source="avares://Lyt.Avalonia.Controls.Theme/Styles.axaml"/>
+		<StyleInclude Source="avares://Lyt.Avalonia.Controls.Theme/Styles/Styles.axaml"/>
 	</Application.Styles>
 
 	<Application.Resources>
