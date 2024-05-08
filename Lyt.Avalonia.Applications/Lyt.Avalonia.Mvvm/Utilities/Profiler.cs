@@ -3,10 +3,13 @@ namespace Lyt.Avalonia.Mvvm.Utilities;
 
 public sealed class Profiler
 {
+    private readonly ILogger logger; 
     private bool isTimingStarted;
     private Stopwatch? stopwatch;
 
-    public static async Task FullGcCollect(int delay = 0)
+    public Profiler ( ILogger logger ) => this.logger = logger;
+
+    public async Task FullGcCollect(int delay = 0)
     {
         GC.Collect();
         GC.WaitForPendingFinalizers();
@@ -14,7 +17,7 @@ public sealed class Profiler
         GCNotificationStatus status = GC.WaitForFullGCComplete();
         if (Debugger.IsAttached && status != GCNotificationStatus.NotApplicable)
         {
-            Debug.WriteLine("GC Status: " + status.ToString());
+            this.logger.Info("GC Status: " + status.ToString());
         }
 
         if (delay > 0)
@@ -23,11 +26,11 @@ public sealed class Profiler
         }
     }
 
-    public static int[] CollectionCounts()
+    public int[] CollectionCounts()
         => [GC.CollectionCount(0), GC.CollectionCount(1), GC.CollectionCount(2)];
 
     [Conditional("DEBUG")]
-    public static void Track(
+    public void Track(
         string message,
         [CallerFilePath] string sourceFilePath = "",
         [CallerLineNumber] int sourceLineNumber = 0)
@@ -41,7 +44,7 @@ public sealed class Profiler
 
         string typeName = method.DeclaringType!.Name;
         string memberName = method.Name;
-        Debug.WriteLine(
+        this.logger.Info(
             string.Format(
                 "***** {0} -- From {1}.{2} in {3}, line {4}",
                 message, typeName, memberName, sourceFilePath, sourceLineNumber));
@@ -52,7 +55,7 @@ public sealed class Profiler
     {
         if (this.isTimingStarted)
         {
-            Debug.WriteLine("Timing already started");
+            this.logger.Warning("Timing already started");
             return;
         }
 
@@ -65,7 +68,7 @@ public sealed class Profiler
     {
         if (!this.isTimingStarted || (this.stopwatch == null))
         {
-            Debug.WriteLine("Timing not started");
+            this.logger.Warning("Timing not started");
             return;
         }
 
@@ -74,31 +77,31 @@ public sealed class Profiler
         float millisecs = (float)Math.Round(this.stopwatch.Elapsed.TotalMilliseconds, 1);
         this.stopwatch = null;
         string rightNow = DateTime.Now.ToLocalTime().ToLongTimeString();
-        Debug.WriteLine("***** " + comment + " - Timing: " + millisecs.ToString("F1") + " ms.  - at: " + rightNow);
+        this.logger.Info("***** " + comment + " - Timing: " + millisecs.ToString("F1") + " ms.  - at: " + rightNow);
     }
 
     [Conditional("DEBUG")]
-    public static void MemorySnapshot(string comment = "")
+    public void MemorySnapshot(string comment = "")
     {
         if (OperatingSystem.IsWindows())
         {
-            Profiler.WindowsMemorySnapshot(comment);
+            this.WindowsMemorySnapshot(comment);
         }
     }
 
     [Conditional("DEBUG")]
     [SupportedOSPlatform("windows")]
-    public static async void WindowsMemorySnapshot(string comment)
+    public async void WindowsMemorySnapshot(string comment)
     {
         string rightNow = DateTime.Now.ToLocalTime().ToLongTimeString();
-        Debug.WriteLine("***** Memory Snapshot " + comment + "  at: " + rightNow);
-        await Profiler.FullGcCollect(50);
+        this.logger.Info("***** Memory Snapshot " + comment + "  at: " + rightNow);
+        await this.FullGcCollect(50);
         var currentProcess = Process.GetCurrentProcess();
         string processName = currentProcess.ProcessName;
         var ctr1 = new PerformanceCounter("Process", "Private Bytes", processName);
         float privateBytes = ctr1.NextValue();
         int megaPrivateBytes = (int)((privateBytes + 512 * 1024) / (1024 * 1024));
-        Debug.WriteLine("***** Private Bytes: " + megaPrivateBytes.ToString() + " MB.");
+        this.logger.Info("***** Private Bytes: " + megaPrivateBytes.ToString() + " MB.");
         ctr1.Dispose();
 
         // In dotNet 6, looking up those Perf Counter creates: 

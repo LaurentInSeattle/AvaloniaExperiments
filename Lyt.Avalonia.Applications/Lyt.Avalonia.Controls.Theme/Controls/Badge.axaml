@@ -1,37 +1,45 @@
 ﻿<Styles 
 	xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:badge="using:Lyt.Avalonia.Controls.Badge"
+	xmlns:badgeUsing="using:Lyt.Avalonia.Controls.Badge"
+	xmlns:badgeNamespace ="clr-namespace:Lyt.Avalonia.Controls.Badge;;assembly=Lyt.Avalonia.Controls"
 	>
-	<Style Selector="badge|Badge">
+	<Style Selector="badgeUsing|Badge">
 		<Setter Property="HorizontalAlignment" Value="Center"/>
 		<Setter Property="BadgeContentTemplate">
 			<DataTemplate>
 				<Panel>
-					<Ellipse Fill="Red"
-							 Stroke="White"
-							 StrokeThickness="2.0"
-							 Width="20"
-							 Height="20"/>
-					<TextBlock Text="{Binding $parent[badge|Badge].BadgeContent}"
-							   FontSize="14"
-							   VerticalAlignment="Center"
-							   HorizontalAlignment="Center"/>
+					<Ellipse 
+						Fill="Red"
+						Stroke="White"
+						StrokeThickness="2.0"
+						Width="32"
+						Height="32"
+						/>
+					<TextBlock 
+						Text="{Binding $parent[ContentControl].BadgeContent}"
+						Padding="0" FontSize="12" FontWeight="Bold"
+						Foreground="White"
+						VerticalAlignment="Center"
+						HorizontalAlignment="Center"
+						/>
 				</Panel>
 			</DataTemplate>
 		</Setter>
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Grid Margin="{TemplateBinding Margin}">
-					<ContentPresenter Name="PART_ContentPresenter"
-									  Content="{TemplateBinding Content}"
-									  ContentTemplate="{TemplateBinding ContentTemplate}"/>
-					<ContentPresenter Name="PART_BadgePresenter"
-									  Content="{TemplateBinding BadgeContent}"
-									  ContentTemplate="{TemplateBinding BadgeContentTemplate}"
-									  VerticalAlignment="{Binding $parent[badge|Badge].BadgeVerticalAlignment}"
-									  HorizontalAlignment="{Binding $parent[badge|Badge].BadgeHorizontalAlignment}"
-									  Margin="{Binding $parent[badge|Badge].BadgeThickness}"/>
+					<ContentPresenter 
+						Name="PART_ContentPresenter"
+						Content="{TemplateBinding Content}"
+						/>
+					<ContentPresenter 
+						Name="PART_BadgePresenter"
+						ContentTemplate="{TemplateBinding BadgeContentTemplate}"
+						VerticalAlignment="{Binding $parent[ContentControl].BadgeVerticalAlignment}"
+						HorizontalAlignment="{Binding $parent[ContentControl].BadgeHorizontalAlignment}"
+						Margin="{Binding $parent[Grid].BadgeThickness}"
+						/>
 				</Grid>
 			</ControlTemplate>
 		</Setter>

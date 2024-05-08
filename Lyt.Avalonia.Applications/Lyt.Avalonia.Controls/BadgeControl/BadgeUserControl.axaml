@@ -29,20 +29,17 @@
 						>
 					</Ellipse>
 					<Ellipse
+						Classes="badge"
 						x:Name="backgroundEllipse"
-						Fill="Red"
-						Margin="2"
 						>
 					</Ellipse>
 					<PathIcon
 						/>
 					<TextBlock
-						Foreground="White"
-						FontWeight="Bold"
-						FontSize="18"
-						Text="9"
+						Classes="badge"
+						Text="9+"
 						HorizontalAlignment="Center" VerticalAlignment="Center"
-						TextAlignment="Center" 
+						TextAlignment="Center"
 						>
 					</TextBlock>
 				</Grid>

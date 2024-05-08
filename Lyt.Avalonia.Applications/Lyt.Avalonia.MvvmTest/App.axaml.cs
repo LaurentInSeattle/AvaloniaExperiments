@@ -22,6 +22,7 @@ public partial class App : ApplicationBase
         ],
         [
            // Singletons
+           typeof(Profiler),
            typeof(ShellViewModel),
            typeof(StartupViewModel),
            typeof(LoginViewModel),

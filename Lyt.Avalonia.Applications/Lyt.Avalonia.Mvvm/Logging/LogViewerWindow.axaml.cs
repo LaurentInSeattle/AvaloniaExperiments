@@ -20,7 +20,7 @@ public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged
         this.showingAll = true;
         this.AllLogEntries = [];
         this.observableLogEntries = [];
-        this.DataContext = this.ObservableLogEntries;
+        this.DataContext = this;
         this.greenBrushDebug = new SolidColorBrush(Color.FromRgb(0x5E, 0xD9, 0xBF));
         this.greenBrushInfo = new SolidColorBrush(Color.FromRgb(0x40, 0xE9, 0xAE));
         this.orangeBrush = new SolidColorBrush(Colors.DarkOrange);
@@ -100,8 +100,6 @@ public partial class LogViewerWindow : Window, ILogger, INotifyPropertyChanged
                  select entry).ToList();
             this.ObservableLogEntries = new ObservableCollection<LogEntry>(filtered);
         }
-
-        this.DataContext = this.ObservableLogEntries;
     }
 
     private void Update(LogEntry logEntry)

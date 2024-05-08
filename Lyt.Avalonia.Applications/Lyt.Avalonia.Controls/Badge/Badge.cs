@@ -31,6 +31,7 @@ public partial class Badge : ContentControl
             IObservable<object?> observable = this.badgePresenter.GetObservable(ContentProperty); 
             observable.Subscribe(this.SetBadgeMargin);
             BoundsProperty.Changed.Subscribe(this.SetBadgeMargin);
+            this.SetBadgeMargin(null);
         }
     }
 
@@ -98,6 +99,8 @@ public partial class Badge : ContentControl
                 break;
         }
 
+        //Debug.WriteLine(top);
+        //Debug.WriteLine(left);
         this.BadgeThickness = new(left, top, right, bottom);
     }
 

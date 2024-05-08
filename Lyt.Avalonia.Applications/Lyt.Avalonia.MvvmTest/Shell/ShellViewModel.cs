@@ -51,7 +51,8 @@ public sealed class ShellViewModel : Bindable<ShellView>
         bool modelIsTicking = this.timingModel.IsTicking;
         this.IsTicking = modelIsTicking ? "Ticking" : "Stopped";
         this.ButtonText = modelIsTicking ? "Stop" : "Start";
-        Profiler.MemorySnapshot();
+        var profiler = App.GetRequiredService<Profiler>();
+        profiler.MemorySnapshot();
         if (this.Workflow is not null)
         {
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
@@ -97,7 +98,7 @@ public sealed class ShellViewModel : Bindable<ShellView>
             new StateMachineDefinition<WorkflowState, WorkflowTrigger, Bindable>(
                 WorkflowState.Startup, // Initial state
                 [ 
-                    // List of states
+                    // List of state definitions
                     startup, login , select, process,
                 ]);
 
