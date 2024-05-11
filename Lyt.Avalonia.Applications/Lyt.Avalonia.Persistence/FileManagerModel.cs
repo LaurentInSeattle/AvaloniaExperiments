@@ -26,19 +26,19 @@ public sealed class FileManagerModel : ModelBase, IModel
 
     public override Task Configure(object? modelConfiguration)
     {
-        if (modelConfiguration is not FileManagerConfiguration configuration)
+        if (modelConfiguration is not FileManagerConfiguration fileManagerConfiguration)
         {
             throw new ArgumentNullException(nameof(modelConfiguration));
         }
 
-        if (string.IsNullOrWhiteSpace(configuration.Organization) ||
-            string.IsNullOrWhiteSpace(configuration.Application) ||
-            string.IsNullOrWhiteSpace(configuration.RootNamespace))
+        if (string.IsNullOrWhiteSpace(fileManagerConfiguration.Organization) ||
+            string.IsNullOrWhiteSpace(fileManagerConfiguration.Application) ||
+            string.IsNullOrWhiteSpace(fileManagerConfiguration.RootNamespace))
         {
             throw new Exception("Invalid File Manager Configuration");
         }
 
-        this.configuration = configuration;
+        this.configuration = fileManagerConfiguration;
         try
         {
             this.SetupEnvironment();
